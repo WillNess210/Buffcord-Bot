@@ -1,0 +1,17 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: bot
+      dockerfile: Dockerfile
+    security_opt: 
+      - 'apparmor=unconfined'
+    volumes:
+      - ./:/bot
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: local #local or prod
+    expose:
+      - 8080
+    restart: 'always'
