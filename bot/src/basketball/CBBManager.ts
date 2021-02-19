@@ -5,12 +5,12 @@ import SportsRadarAPI from "./SportsRadarAPI";
 import APIBasketball from "./SportsRadarAPI";
 import { BBGame } from "./models/Game";
 import BBPlayer, { BBPlayerEmoji } from "./models/Player";
-import { BBSchoolInfo, BBSchoolMap, BBTeam, BBTeamEmoji, BBTeamMap, BBTeamsToMap } from "./models/Team";
+import { SchoolInfo, SchoolMap, BBTeam, BBTeamEmoji, BBTeamMap, BBTeamsToMap } from "./models/Team";
 import { BBGameBoxScore, BBPlayerBoxScore, BBTeamBoxScore } from "./models/GameBoxScore";
 
 export interface CBBManagerOptions {
-    team: BBSchoolInfo;
-    teams: BBSchoolMap;
+    team: SchoolInfo;
+    teams: SchoolMap;
     season: string;
     SPORTSRADAR_TOKEN: string;
     team_logos: BBTeamEmoji[];
@@ -62,7 +62,7 @@ export default class CBBManager {
 
     }
 
-    public getTeamPlayers = async (team: string = this.options.team.id): Promise<APIResponse<BBPlayer[]>> => {
+    public getTeamPlayers = async (team: string = this.options.team.bb_id): Promise<APIResponse<BBPlayer[]>> => {
         const cache_key = `${team}-teamplayers`;
         if (this.cachedData.isCached(cache_key)) {
             return getAPISuccess(this.cachedData.getData(cache_key));
@@ -84,7 +84,7 @@ export default class CBBManager {
         // set currentGame
         //this.currentGame = resp.data.find((game: BBGame) => OnSameDay(new Date(), game.date) && (game.homeTeamID === this.options.team_sportsradar || game.awayTeamID === this.options.team_sportsradar));
         this.currentGame = resp.data.find((game: BBGame): boolean => {
-            if (game.homeTeamID === this.options.team.id || game.awayTeamID === this.options.team.id) {
+            if (game.homeTeamID === this.options.team.bb_id || game.awayTeamID === this.options.team.bb_id) {
                 return OnSameDay(game.date, new Date());
             }
             return false;
@@ -93,7 +93,7 @@ export default class CBBManager {
         return resp;
     }
 
-    public getTeamSchedule = async (team: string = this.options.team.id): Promise<APIResponse<BBGame[]>> => {
+    public getTeamSchedule = async (team: string = this.options.team.bb_id): Promise<APIResponse<BBGame[]>> => {
         const resp = await this.getAllGames();
         if (resp.status === ResponseStatus.FAILURE) return resp;
         const games = resp.data.filter(game => game.homeTeamID === team || game.awayTeamID === team);

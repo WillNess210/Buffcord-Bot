@@ -8,7 +8,7 @@ import { ConfHandler } from './discord/message_handlers/ConfHandler';
 import { PingHandler } from './discord/message_handlers/PingHandler';
 import { PlayersHandler } from './discord/message_handlers/PlayersHandler';
 import { HelpHandler } from './discord/message_handlers/HelpHandler';
-import { BBSchoolInfo, BBSchools, BB_SCHOOL_MAP } from './basketball/models/Team';
+import { SchoolInfo, Schools, SCHOOL_MAP } from './basketball/models/Team';
 import { environment } from './basketball/models/Environment';
 import { all_emojis, EMOJI_MAP } from './basketball/models/Emojis';
 
@@ -19,21 +19,21 @@ const env = process.env.ENV as environment;
 const emoji_map = EMOJI_MAP;
 
 // SETTING UP SCHOOLS (in Team.ts)
-const bbSchoolMap = BB_SCHOOL_MAP;
+const schoolMap = SCHOOL_MAP;
 
 // SETTING UP CBB MANAGER
 const cbbOptions: CBBManagerOptions = {
-    team: bbSchoolMap[BBSchools.colorado],
-    teams: bbSchoolMap,
+    team: schoolMap[Schools.colorado],
+    teams: schoolMap,
     season: '2020',
     SPORTSRADAR_TOKEN: process.env.SPORTSRADAR_TOKEN,
-    team_logos: Object.values(bbSchoolMap).map((school: BBSchoolInfo) => ({
-        team: school.id,
+    team_logos: Object.values(schoolMap).map((school: SchoolInfo) => ({
+        team: school.bb_id,
         emoji: emoji_map[school.emoji],
     })),
     player_logos: [
-        {team: bbSchoolMap[BBSchools.colorado].id, jersey_number: '21', emoji: emoji_map[all_emojis.evan]},
-        {team: bbSchoolMap[BBSchools.colorado].id, jersey_number: '25', emoji: emoji_map[all_emojis.kin]}
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '21', emoji: emoji_map[all_emojis.evan]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '25', emoji: emoji_map[all_emojis.kin]}
     ]
 }
 
