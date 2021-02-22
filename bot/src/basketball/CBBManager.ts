@@ -1,16 +1,16 @@
 import { APIResponse, getAPISuccess, ResponseStatus } from "../common/APIResponse";
 import CachedDataManager, { CacheStrategies } from "../common/CachedDataManager";
-import { OnSameDay, ReadableDate, SportsDataDate } from "../common/DateHelper";
+import { OnSameDay, ReadableDate, ReadableDateShort, SportsDataDate } from "../common/DateHelper";
 import SportsRadarAPI from "./SportsRadarAPI";
 import APIBasketball from "./SportsRadarAPI";
 import { BBGame } from "./models/Game";
 import BBPlayer, { BBPlayerEmoji } from "./models/Player";
-import { SchoolInfo, SchoolMap, BBTeam, BBTeamEmoji, BBTeamMap, BBTeamsToMap } from "./models/Team";
+import { SchoolInfo, BBTeam, BBTeamEmoji, BBTeamMap, BBTeamsToMap, SchoolIDMap } from "./models/Team";
 import { BBGameBoxScore, BBPlayerBoxScore, BBTeamBoxScore } from "./models/GameBoxScore";
 
 export interface CBBManagerOptions {
     team: SchoolInfo;
-    teams: SchoolMap;
+    teams: SchoolIDMap;
     season: string;
     SPORTSRADAR_TOKEN: string;
     team_logos: BBTeamEmoji[];
@@ -60,6 +60,21 @@ export default class CBBManager {
         this.cachedData.addCachedData(cache_key, new_resp.data, CacheStrategies.NewDay);
         return new_resp;
 
+    }
+
+    public getPrimaryTeam = async (): Promise<APIResponse<any>> => {
+        const all_teams = await this.getAllTeams();
+        if(all_teams.status === ResponseStatus.FAILURE) return {
+            status: all_teams.status,
+            error: all_teams.error,
+            data: null
+        };
+
+        return {
+            status: ResponseStatus.SUCCESS,
+            error: '',
+            data: all_teams.data[this.options.team.bb_id]
+        };
     }
 
     public getTeamPlayers = async (team: string = this.options.team.bb_id): Promise<APIResponse<BBPlayer[]>> => {
@@ -135,16 +150,16 @@ export default class CBBManager {
 
     public getGameAsTextRow = (game: BBGame): string => {
         const teamSplitChar = game.neutral_site ? 'vs' : 'at';
-        const rowPrefix = `${ReadableDate(game.date)}: `;
+        const rowPrefix = `${ReadableDateShort(game.date)}: `;
         if (game.finished) {
             const awayWon: boolean = game.awayPoints > game.homePoints;
             const awayTeam =
-                `${this.getTeamEmoji(game.awayTeamID)}${game.awayTeamName}(${game.awayPoints})`;
+                `${this.getTeamEmoji(game.awayTeamID)}${this.getTeamShort(game.awayTeamID, game.awayTeamName)}(${game.awayPoints})`;
             const homeTeam = 
-            `${this.getTeamEmoji(game.homeTeamID)}${game.homeTeamName}(${game.homePoints})`;
+            `${this.getTeamEmoji(game.homeTeamID)}${this.getTeamShort(game.homeTeamID, game.homeTeamName)}(${game.homePoints})`;
             return rowPrefix + `${awayWon ? '**'+awayTeam+'**' : awayTeam} ${teamSplitChar} ${awayWon ? homeTeam : '**'+homeTeam+'**'}`
         } else {
-            return rowPrefix + `${this.getTeamEmoji(game.awayTeamID)}${game.awayTeamName} ${teamSplitChar} ${this.getTeamEmoji(game.homeTeamID)}${game.homeTeamName}`;
+            return rowPrefix + `${this.getTeamEmoji(game.awayTeamID)}${this.getTeamShort(game.awayTeamID, game.awayTeamName)} ${teamSplitChar} ${this.getTeamEmoji(game.homeTeamID)}${this.getTeamShort(game.homeTeamID, game.homeTeamName)}`;
         }
     }
 
@@ -170,6 +185,8 @@ export default class CBBManager {
             ? this.emojis.team_logos[team_id].emoji
             : '';
     }
+
+    private getTeamShort = (team_id: string, backup: string): string => this.options.teams[team_id] ? this.options.teams[team_id].short : backup;
 
     private loadEmojis = () => {
         this.options.team_logos.forEach((emoji: BBTeamEmoji) => this.emojis.team_logos[emoji.team] = emoji);

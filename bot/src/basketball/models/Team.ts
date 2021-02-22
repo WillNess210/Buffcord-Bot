@@ -48,6 +48,7 @@ export interface SchoolInfo {
 }
 
 export type SchoolMap = { [id in Schools]: SchoolInfo; };
+export type SchoolIDMap = { [id: string]: SchoolInfo; };
 
 export const SCHOOL_MAP: SchoolMap = {
     [Schools.colorado]: {
@@ -148,4 +149,12 @@ export const SCHOOL_MAP: SchoolMap = {
         name: 'Alabama',
         short: 'ALA'
     }
+};
+
+export const getSchoolIdMap = (): SchoolIDMap => {
+    const SCHOOL_ID_MAP = {};
+    Object.values(SCHOOL_MAP).forEach((school: SchoolInfo) => {
+        SCHOOL_ID_MAP[school.bb_id] = school;
+    });
+    return SCHOOL_ID_MAP;
 }

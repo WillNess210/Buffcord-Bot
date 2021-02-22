@@ -17,6 +17,10 @@ export const ReadableDate = (date: Date): string =>
     date ? `${monthStrs[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}`
     : '?';
 
+export const ReadableDateShort = (date: Date): string => 
+    date ? `${monthStrs[date.getMonth()]} ${date.getDate()} ${(date.getFullYear() + '').substr(2,2)}`
+    : '?';
+
 export const SportsDataDate = (date: Date): string =>
     `${date.getFullYear()}-${monthStrs[date.getMonth()].toUpperCase()}-${date.getDate()}`;
 
