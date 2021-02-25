@@ -9,7 +9,7 @@ import { MessageHandler } from './MessageHandler';
 export class TeamHandler extends MessageHandler {
     command_string = 'team';
     description = `Displays information about a team.
-        usage:${botOptions.commandPrefix}${this.command_string} [team code] (use !teams for list of team codes)`;
+        usage: ${botOptions.commandPrefix}${this.command_string} [team code] (use !teams for list of team codes)`;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const resp = await cbbManager.getAllTeams();
