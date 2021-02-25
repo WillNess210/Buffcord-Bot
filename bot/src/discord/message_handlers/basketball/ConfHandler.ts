@@ -2,6 +2,7 @@ import * as discordjs from 'discord.js';
 import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
 import { BBTeam } from '../../../basketball/models/Team';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
+import { EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
@@ -30,9 +31,14 @@ export class ConfHandler extends MessageHandler {
             msg.reply(`${conference} not found`);
             return;
         }
-        const display_string = `**${conference}** Conference:\n` + teams
+        const display_string = teams
             .map((team: BBTeam, index: number) => `${team.id === myTeam.id ? `**${index + 1}` : index + 1}. ${cbbManager.getTeamAsTextRow(team)}${team.id === myTeam.id ? '**' : ''}`)
             .join('\n');
-        msg.channel.send(display_string, {split: true});
+        const embed_msg: EmbedMessage = {
+            title: conference,
+            timestamp: new Date(),
+            description: display_string,
+        };
+        msg.channel.send(getDiscordJSEmbedObject(embed_msg));
     }
 }
