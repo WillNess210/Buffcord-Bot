@@ -4,14 +4,16 @@ import { BBGameBoxScore, BBTeamBoxScore } from '../../../basketball/models/GameB
 import BBPlayer, { BBPlayerMap, BBPlayersToMap } from '../../../basketball/models/Player';
 import { BBTeam } from '../../../basketball/models/Team';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
-import { BLANK_EMBED_FIELD, EmbedMessage } from '../../helpers/Embed';
+import { BLANK_EMBED_FIELD, EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
-export const getTeamGameScoreEmbed = (team: BBTeam, team_score: BBTeamBoxScore): EmbedMessage => {
+export const getTeamGameScoreEmbed = (team: BBTeam, team_score: BBTeamBoxScore, players: BBPlayerMap): EmbedMessage => {
     return {
         title: `${team.school} ${team.name} (${team.wins}-${team.losses})`,
-        description: team.conference,
+        description: team_score.player_scores.length === 0 ? 'No player data' : team_score
+            .player_scores
+            .map(score => cbbManager.getBoxScoreAsTextRow(players[score.id], score)).join('\n'),
         color: team.schoolInfo.color.getInt(),
         timestamp: new Date(),
         thumbnail: {
@@ -67,11 +69,7 @@ export class BoxScoreHandler extends MessageHandler {
         const homePlayers: BBPlayerMap = BBPlayersToMap(respHP.data);
         const awayPlayers: BBPlayerMap = BBPlayersToMap(respAP.data);
         
-        const display_string = 
-            `${cbbManager.getBoxScoreTeamHeader(homeTeam, scores.homeTeam)}
-${scores.homeTeam.player_scores.map(score => cbbManager.getBoxScoreAsTextRow(homePlayers[score.id], score)).join('\n')}
-${cbbManager.getBoxScoreTeamHeader(awayTeam, scores.awayTeam)}
-${scores.awayTeam.player_scores.map(score => cbbManager.getBoxScoreAsTextRow(awayPlayers[score.id], score)).join('\n')}`;
-        msg.channel.send(display_string, {split:true});
+        msg.channel.send(getDiscordJSEmbedObject(getTeamGameScoreEmbed(awayTeam, scores.awayTeam, awayPlayers)));
+        msg.channel.send(getDiscordJSEmbedObject(getTeamGameScoreEmbed(homeTeam, scores.homeTeam, homePlayers)));
     }
 }

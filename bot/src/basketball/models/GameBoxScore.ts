@@ -30,7 +30,7 @@ export const createTeamBoxScore = (data: any): BBTeamBoxScore => {
         id: data.id,
         points: data.points,
         field_goals_made: stats.field_goals_made,
-        field_goals_att: stats.field_goats_att,
+        field_goals_att: stats.field_goals_att,
         field_goals_pct: stats.field_goals_pct,
         three_points_made: stats.three_points_made,
         three_points_att: stats.three_points_att,

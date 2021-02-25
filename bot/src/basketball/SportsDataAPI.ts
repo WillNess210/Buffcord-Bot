@@ -1,7 +1,5 @@
 import axios from "axios";
 import { APIResponse, ResponseStatus } from "../common/APIResponse";
-import { SportsDataDate } from "../common/DateHelper";
-import { boxScoresToMap, PlayerBoxScore, PlayerBoxScoreMap } from "./models/PlayerBoxScore";
 
 export interface SportsDataAPIOptions {
     SPORTS_API_TOKEN: string;

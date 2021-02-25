@@ -3,7 +3,6 @@ import { APIResponse, ResponseStatus } from "../common/APIResponse";
 import { BBGame, BBGameModel } from "./models/Game";
 import { BBGameBoxScore, createTeamBoxScore } from "./models/GameBoxScore";
 import BBPlayer from "./models/Player";
-import { PlayerBoxScoreMap } from "./models/PlayerBoxScore";
 import { BBTeam, SchoolIDMap } from "./models/Team";
 
 export interface SportsRadarAPIOptions {
