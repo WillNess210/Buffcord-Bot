@@ -1,6 +1,6 @@
 import * as discordjs from 'discord.js';
 import { MessageHandler } from './message_handlers/MessageHandler';
-import { messageContentToUserCommand, UserCommand } from './UserCommand';
+import { messageContentToUserCommand, UserCommand } from './helpers/UserCommand';
 
 export interface DiscordBotOptions {
     DISCORD_BOT_TOKEN: string;

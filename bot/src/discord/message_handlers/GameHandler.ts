@@ -1,12 +1,9 @@
 import * as discordjs from 'discord.js';
 import { cbbManager } from '../..';
-import { BBGame } from '../../basketball/models/Game';
-import { BBGameBoxScore, BBPlayerBoxScore, BBPlayerBoxScoreMap, getBoxScorePlayerMap } from '../../basketball/models/GameBoxScore';
-import BBPlayer, { BBPlayerMap, BBPlayersToMap } from '../../basketball/models/Player';
-import { PlayerBoxScoreMap } from '../../basketball/models/PlayerBoxScore';
+import { BBGameBoxScore } from '../../basketball/models/GameBoxScore';
 import { BBTeam } from '../../basketball/models/Team';
 import { getAPIErrorMessage, ResponseStatus } from '../../common/APIResponse';
-import { UserCommand } from '../UserCommand';
+import { UserCommand } from '../helpers/UserCommand';
 import { MessageHandler } from './MessageHandler';
 
 export class GameHandler extends MessageHandler {

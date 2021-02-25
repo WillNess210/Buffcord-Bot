@@ -11,6 +11,8 @@ import { HelpHandler } from './discord/message_handlers/HelpHandler';
 import { getSchoolIdMap, SchoolInfo, Schools, SCHOOL_MAP } from './basketball/models/Team';
 import { environment } from './basketball/models/Environment';
 import { all_emojis, EMOJI_MAP } from './basketball/models/Emojis';
+import { TeamHandler } from './discord/message_handlers/TeamHandler';
+import { TeamsHandler } from './discord/message_handlers/TeamsHandler';
 
 config();
 const env = process.env.ENV as environment;
@@ -56,7 +58,9 @@ const handlers = [
     new BoxScoreHandler(),
     new GameHandler(),
     new ConfHandler(),
-    new HelpHandler()
+    new HelpHandler(),
+    new TeamHandler(),
+    new TeamsHandler(),
 ];
 botOptions.commandHandlers = handlers;
 

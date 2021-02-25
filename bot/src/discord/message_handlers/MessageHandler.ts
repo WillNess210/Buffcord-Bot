@@ -1,6 +1,6 @@
 import * as discordjs from 'discord.js';
 import { APIResponse } from '../../common/APIResponse';
-import { UserCommand } from '../UserCommand';
+import { UserCommand } from '../helpers/UserCommand';
 
 // All message handlers should extend this
 export class MessageHandler {

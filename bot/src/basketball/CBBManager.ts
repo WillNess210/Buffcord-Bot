@@ -24,7 +24,7 @@ interface DisplayEmojis {
 
 export default class CBBManager {
     public currentGame: BBGame | undefined;
-    private options: CBBManagerOptions;
+    public options: CBBManagerOptions;
     private sportsRadarAPI: SportsRadarAPI;
     private cachedData: CachedDataManager;
     private emojis: DisplayEmojis;
@@ -46,7 +46,7 @@ export default class CBBManager {
         if (this.cachedData.isCached(cache_key)) {
             return getAPISuccess(this.cachedData.getData(cache_key));
         }
-        const resp = await this.sportsRadarAPI.getAllTeams();
+        const resp = await this.sportsRadarAPI.getAllTeams(this.options.teams);
         if (resp.status === ResponseStatus.FAILURE) return {
             status: resp.status,
             error: resp.error,
@@ -62,7 +62,7 @@ export default class CBBManager {
 
     }
 
-    public getPrimaryTeam = async (): Promise<APIResponse<any>> => {
+    public getPrimaryTeam = async (): Promise<APIResponse<BBTeam>> => {
         const all_teams = await this.getAllTeams();
         if(all_teams.status === ResponseStatus.FAILURE) return {
             status: all_teams.status,

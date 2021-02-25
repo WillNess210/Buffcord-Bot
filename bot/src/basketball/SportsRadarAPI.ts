@@ -4,7 +4,7 @@ import { BBGame } from "./models/Game";
 import { BBGameBoxScore, createTeamBoxScore } from "./models/GameBoxScore";
 import BBPlayer from "./models/Player";
 import { PlayerBoxScoreMap } from "./models/PlayerBoxScore";
-import { BBTeam } from "./models/Team";
+import { BBTeam, SchoolIDMap } from "./models/Team";
 
 export interface SportsRadarAPIOptions {
     SPORTSRADAR_TOKEN: string;
@@ -125,7 +125,7 @@ export default class SportsRadarAPI {
         };
     }
 
-    public getAllTeams = async (): Promise<APIResponse<BBTeam[]>> => {
+    public getAllTeams = async (schools: SchoolIDMap): Promise<APIResponse<BBTeam[]>> => {
         const api = `seasons/${this.season}/REG/standings`;
         const resp = (await this.fetchAPI(api)) as APIResponse<any>;
         if (resp.status === ResponseStatus.SUCCESS) {
@@ -138,8 +138,9 @@ export default class SportsRadarAPI {
                         school: team.market,
                         conference: conference.alias,
                         wins: team.wins,
-                        losses: team.losses
-                    });
+                        losses: team.losses,
+                        schoolInfo: team.id in schools && schools[team.id]
+                    } as BBTeam);
                 });
             });
             return {

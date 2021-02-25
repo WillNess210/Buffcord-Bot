@@ -1,8 +1,6 @@
 import * as discordjs from 'discord.js';
-import { botOptions, cbbManager } from '../..';
-import BBPlayer from '../../basketball/models/Player';
-import { getAPIErrorMessage, ResponseStatus } from '../../common/APIResponse';
-import { UserCommand } from '../UserCommand';
+import { botOptions } from '../..';
+import { UserCommand } from '../helpers/UserCommand';
 import { MessageHandler } from './MessageHandler';
 
 export class HelpHandler extends MessageHandler {
