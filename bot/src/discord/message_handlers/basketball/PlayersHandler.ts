@@ -2,7 +2,7 @@ import * as discordjs from 'discord.js';
 import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
 import BBPlayer from '../../../basketball/models/Player';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
-import { EmbedMessage } from '../../helpers/Embed';
+import { EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
@@ -26,6 +26,6 @@ export class PlayersHandler extends MessageHandler {
             timestamp: new Date(),
             description: display_string,
         };
-        msg.channel.send(display_string, {split: true});
+        msg.channel.send(getDiscordJSEmbedObject(embed_msg));
     }
 }

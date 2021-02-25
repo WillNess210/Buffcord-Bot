@@ -1,7 +1,5 @@
 export enum all_emojis {
     colorado,
-    evan,
-    kin,
     utah,
     washington,
     washington_state,
@@ -15,13 +13,22 @@ export enum all_emojis {
     arizona_state,
     colorado_state,
     alabama,
-    basketball
+    basketball,
+    // players
+    evan,
+    kin,
+    keeshawn,
+    parquet,
+    jabari,
+    horne,
+    maddox,
+    dshawn,
+    dasilva,
+    dallas,
 };
 
 export const EMOJI_MAP: { [key in all_emojis]: string;} = {
     [all_emojis.colorado]: '<:cu:807337700511186945>',
-    [all_emojis.evan]: '<:evan:807340159968346132>',
-    [all_emojis.kin]: '<:kin:807341235823312917>',
     [all_emojis.utah]: '<:utah:812374659391029259>',
     [all_emojis.washington]: '<:washington:812374668668305438>',
     [all_emojis.washington_state]: '<:washington_state:812374680660082749>',
@@ -35,5 +42,16 @@ export const EMOJI_MAP: { [key in all_emojis]: string;} = {
     [all_emojis.arizona_state]: '<:asu:812374591397560411>',
     [all_emojis.colorado_state]: '<:CSU:807341940156006411>',
     [all_emojis.alabama]: ':poop:',
-    [all_emojis.basketball]: ':basketball:'
+    [all_emojis.basketball]: ':basketball:',
+    // players
+    [all_emojis.evan]: '<:evan:807340159968346132>',
+    [all_emojis.kin]: '<:kin:807341235823312917>',
+    [all_emojis.keeshawn]: '<:keeshawn:814564717985005619>',
+    [all_emojis.parquet]: '<:parquet:814564717795868756>',
+    [all_emojis.jabari]: '<:jabari:814564234805379123>',
+    [all_emojis.horne]: '<:horne:814564234650189824>',
+    [all_emojis.maddox]: '<:maddox:814564233579724871>',
+    [all_emojis.dshawn]: '<:dshawn:814564233165013034>',
+    [all_emojis.dasilva]: '<:dasilva:814564232489992212>',
+    [all_emojis.dallas]: '<:dallas:814564232468758551>',
 };

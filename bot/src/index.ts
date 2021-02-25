@@ -15,6 +15,14 @@ import { TeamHandler } from './discord/message_handlers/basketball/TeamHandler';
 import { TeamsHandler } from './discord/message_handlers/basketball/TeamsHandler';
 import { ConfsHandler } from './discord/message_handlers/basketball/ConfsHandler';
 
+
+/*
+
+TODO:
+1. 'lineup' command shows the 5 on court players for each team w/ their stats
+
+*/
+
 config();
 const env = process.env.ENV as environment;
 
@@ -36,8 +44,16 @@ const cbbOptions: CBBManagerOptions = {
         emoji: emoji_map[school.emoji],
     })),
     player_logos: [
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '25', emoji: emoji_map[all_emojis.kin]},
         {team: schoolMap[Schools.colorado].bb_id, jersey_number: '21', emoji: emoji_map[all_emojis.evan]},
-        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '25', emoji: emoji_map[all_emojis.kin]}
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '11', emoji: emoji_map[all_emojis.keeshawn]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '24', emoji: emoji_map[all_emojis.parquet]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '12', emoji: emoji_map[all_emojis.jabari]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '41', emoji: emoji_map[all_emojis.horne]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '3', emoji: emoji_map[all_emojis.maddox]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '5', emoji: emoji_map[all_emojis.dshawn]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '23', emoji: emoji_map[all_emojis.dasilva]},
+        {team: schoolMap[Schools.colorado].bb_id, jersey_number: '13', emoji: emoji_map[all_emojis.dallas]},
     ]
 }
 
