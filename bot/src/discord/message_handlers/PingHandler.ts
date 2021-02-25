@@ -6,6 +6,8 @@ import { MessageHandler } from './MessageHandler';
 export class PingHandler extends MessageHandler {
     command_string = 'ping';
     description = 'Responds pong. Is used to test bot activity.';
+    channels = [];
+    hideInHelpMenu = true;
 
     testEmbed: EmbedMessage = {
         title: "test",

@@ -1,5 +1,5 @@
 import * as discordjs from 'discord.js';
-import {cbbManager } from '../../..';
+import {cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
 import { EMOJI_MAP } from '../../../basketball/models/Emojis';
 import { SchoolInfo, Schools, SCHOOL_MAP } from '../../../basketball/models/Team';
 import { EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
@@ -9,6 +9,7 @@ import { MessageHandler } from '../MessageHandler';
 export class TeamsHandler extends MessageHandler {
     command_string = 'teams';
     description = `Displays all teams with codes`;
+    channels = [DISCORD_CHANNEL_IDS.basketball];
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const teams = Object.values(cbbManager.options.teams)

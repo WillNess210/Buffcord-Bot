@@ -1,6 +1,6 @@
 import * as discordjs from 'discord.js';
-import { botOptions, cbbManager } from '../../..';
-import { BBTeam, BBTeamMap } from '../../../basketball/models/Team';
+import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
+import { BBTeam } from '../../../basketball/models/Team';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
@@ -8,8 +8,9 @@ import { MessageHandler } from '../MessageHandler';
 export class ConfHandler extends MessageHandler {
     private defaultConference = 'PAC12';
     command_string = 'conf';
-    description = `Displays conference standings.
-    usage: ${botOptions.commandPrefix}${this.command_string} [conference_name]  (if conference_name is left blank, ${this.defaultConference} is default)`;
+    description = 'Displays conference standings.'
+    usage = `[conference_code]  (if conference_code is left blank, ${this.defaultConference} is default)`;
+    channels = [DISCORD_CHANNEL_IDS.basketball];
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const conference = userCommand.args.length === 0

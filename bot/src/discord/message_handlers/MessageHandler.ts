@@ -6,11 +6,9 @@ import { UserCommand } from '../helpers/UserCommand';
 export class MessageHandler {
     command_string: string; // Set this in each class! Should be what you want user to call, ex: '!login' command_string should be 'login'
     description: string; // Set this in each class! Will be displayed in the help command
-    channels: string[];
-
-    constructor(channel_ids?: string[]) {
-        this.channels = channel_ids || [];
-    }
+    usage?: string; // Set this in each class (optional)! Will be displayed after the string "Usage: [prefix][command_stirng]" (ex: "Usage: ~help ")
+    channels: string[]; // Set this in each class. Leave blank if command applies to all channels
+    hideInHelpMenu?: boolean;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         console.log(`Undefined message handler ${this.command_string} received ${msg.content}`);

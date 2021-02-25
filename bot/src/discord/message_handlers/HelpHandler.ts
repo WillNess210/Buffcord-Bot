@@ -6,13 +6,14 @@ import { MessageHandler } from './MessageHandler';
 export class HelpHandler extends MessageHandler {
     command_string = 'help';
     description = 'Displays the help menu.';
+    channels = [];
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand): Promise<any> {
         const request_channel = Object.values(DISCORD_CHANNEL_IDS).find((id: string) => id === msg.channel.id);
         if (!request_channel) return msg.channel.send(`I do not work in this channel. Try this command in ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.football)} for football and ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.basketball)} for basketball.`);
         const display_string = '**Commands**:\n' + 
             botOptions.commandHandlers
-                .filter((handler: MessageHandler) => handler.channels.includes(request_channel))
+                .filter((handler: MessageHandler) => !handler.hideInHelpMenu && (handler.channels.length === 0 || handler.channels.includes(request_channel)))
                 .sort((a: MessageHandler, b: MessageHandler): number => a.command_string < b.command_string ? -1 : 1)
                 .map((handler: MessageHandler) => messageHandlerToString(handler))
                 .join('\n');
@@ -21,4 +22,5 @@ export class HelpHandler extends MessageHandler {
 }
 
 const messageHandlerToString = (handler: MessageHandler): string =>
-`**${handler.command_string}:** ${handler.description}`;
+`**${handler.command_string}:** ${handler.description} ${handler.usage ? `
+    usage: ${botOptions.commandPrefix}${handler.command_string} ${handler.usage}` : ''}`;

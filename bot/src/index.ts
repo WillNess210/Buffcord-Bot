@@ -13,6 +13,7 @@ import { environment } from './basketball/models/Environment';
 import { all_emojis, EMOJI_MAP } from './basketball/models/Emojis';
 import { TeamHandler } from './discord/message_handlers/basketball/TeamHandler';
 import { TeamsHandler } from './discord/message_handlers/basketball/TeamsHandler';
+import { ConfsHandler } from './discord/message_handlers/basketball/ConfsHandler';
 
 config();
 const env = process.env.ENV as environment;
@@ -56,15 +57,16 @@ export const DISCORD_CHANNEL_IDS = {
 };
 // set commandHandlers after botOptions creation so the handlers can have access to the config
 const handlers = [
-    new PingHandler([]),
-    new PlayersHandler([DISCORD_CHANNEL_IDS.basketball]),
-    new GamesHandler([DISCORD_CHANNEL_IDS.basketball]),
-    new BoxScoreHandler([DISCORD_CHANNEL_IDS.basketball]),
-    new GameHandler([DISCORD_CHANNEL_IDS.basketball]),
-    new ConfHandler([DISCORD_CHANNEL_IDS.basketball]),
-    new HelpHandler([]),
-    new TeamHandler([DISCORD_CHANNEL_IDS.basketball]),
-    new TeamsHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new HelpHandler(),
+    new PingHandler(),
+    new PlayersHandler(),
+    new GamesHandler(),
+    new BoxScoreHandler(),
+    new GameHandler(),
+    new ConfHandler(),
+    new ConfsHandler(),
+    new TeamHandler(),
+    new TeamsHandler(),
 ];
 botOptions.commandHandlers = handlers;
 

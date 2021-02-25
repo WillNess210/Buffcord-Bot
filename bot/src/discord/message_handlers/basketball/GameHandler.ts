@@ -1,5 +1,5 @@
 import * as discordjs from 'discord.js';
-import { cbbManager } from '../../..';
+import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
 import { BBGameBoxScore } from '../../../basketball/models/GameBoxScore';
 import { BBTeam } from '../../../basketball/models/Team';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
@@ -9,6 +9,7 @@ import { MessageHandler } from '../MessageHandler';
 export class GameHandler extends MessageHandler {
     command_string = 'game';
     description = 'Displays stats for the current game.';
+    channels = [DISCORD_CHANNEL_IDS.basketball];
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const respBS = await cbbManager.getGameBoxScore();
