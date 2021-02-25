@@ -1,6 +1,6 @@
 import axios from "axios";
 import { APIResponse, ResponseStatus } from "../common/APIResponse";
-import { BBGame } from "./models/Game";
+import { BBGame, BBGameModel } from "./models/Game";
 import { BBGameBoxScore, createTeamBoxScore } from "./models/GameBoxScore";
 import BBPlayer from "./models/Player";
 import { PlayerBoxScoreMap } from "./models/PlayerBoxScore";
@@ -67,7 +67,7 @@ export default class SportsRadarAPI {
             const all_games: BBGame[] = [];
             (resp.data.games as any[]).forEach(game => {
                 if(game.status !== 'cancelled' && game.status !== 'postponed')
-                    all_games.push({
+                    all_games.push(new BBGame({
                         id: game.id,
                         date: new Date(game.scheduled),
                         finished: game.status === 'closed',
@@ -80,11 +80,11 @@ export default class SportsRadarAPI {
                         homeWon: 'home_points' in game && game.home_points >= game.away_points,
                         homePoints: game.home_points || 0,
                         awayPoints: game.away_points || 0
-                    } as BBGame);
+                    } as BBGameModel));
             });
             const sorted_games: BBGame[] = all_games
                 .sort((a: BBGame, b: BBGame): number => {
-                    return a.date.getTime() < b.date.getTime() ? -1 : 1;
+                    return a.data.date.getTime() < b.data.date.getTime() ? -1 : 1;
                 });
             return {
                 status: resp.status,
@@ -100,7 +100,7 @@ export default class SportsRadarAPI {
     }
 
     public getGameBoxScore = async(game: BBGame): Promise<APIResponse<BBGameBoxScore>> => {
-        const api = `games/${game.id}/summary`;
+        const api = `games/${game.getID()}/summary`;
         const resp = (await this.fetchAPI(api)) as APIResponse<any>;
         if (resp.status === ResponseStatus.SUCCESS) {
             const gameBoxScore: BBGameBoxScore = {

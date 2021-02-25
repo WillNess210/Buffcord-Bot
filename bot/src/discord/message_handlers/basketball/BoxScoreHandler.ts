@@ -1,11 +1,38 @@
 import * as discordjs from 'discord.js';
 import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
-import { BBGameBoxScore } from '../../../basketball/models/GameBoxScore';
+import { BBGameBoxScore, BBTeamBoxScore } from '../../../basketball/models/GameBoxScore';
 import BBPlayer, { BBPlayerMap, BBPlayersToMap } from '../../../basketball/models/Player';
 import { BBTeam } from '../../../basketball/models/Team';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
+import { BLANK_EMBED_FIELD, EmbedMessage } from '../../helpers/Embed';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
+
+export const getTeamGameScoreEmbed = (team: BBTeam, team_score: BBTeamBoxScore): EmbedMessage => {
+    return {
+        title: `${team.school} ${team.name} (${team.wins}-${team.losses})`,
+        description: team.conference,
+        color: team.schoolInfo.color.getInt(),
+        timestamp: new Date(),
+        thumbnail: {
+            url: team.schoolInfo.logo_url,
+        },
+        fields: [
+            {title: 'Points', value: team_score.points + '', inline: true},
+            {title: 'Personal Fouls', value: team_score.personal_fouls + '', inline: true},
+            BLANK_EMBED_FIELD,
+            {title: 'FG', value: `${team_score.field_goals_made}-${team_score.field_goals_att}`, inline: true},
+            {title: 'FG%', value: team_score.field_goals_pct + '', inline: true},
+            BLANK_EMBED_FIELD,
+            {title: '3PT', value: `${team_score.three_points_made}-${team_score.three_points_att}`, inline: true},
+            {title: '3PT%', value: team_score.three_points_pct + '', inline: true},
+            BLANK_EMBED_FIELD,
+            {title: 'FT', value: `${team_score.free_throws_made}-${team_score.free_throws_att}`, inline: true},
+            {title: 'FT%', value: team_score.free_throws_pct + '', inline: true},
+            BLANK_EMBED_FIELD,
+        ]
+    } 
+};
 
 export class BoxScoreHandler extends MessageHandler {
     command_string = 'box';

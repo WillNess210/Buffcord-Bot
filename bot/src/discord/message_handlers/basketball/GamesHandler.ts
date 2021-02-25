@@ -2,6 +2,7 @@ import * as discordjs from 'discord.js';
 import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
 import { BBGame } from '../../../basketball/models/Game';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
+import { ReadableDateShort } from '../../../common/DateHelper';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
@@ -18,7 +19,7 @@ export class GamesHandler extends MessageHandler {
         }
         const players: BBGame[] = resp.data;
         const display_string = 'Games:\n' + players
-            .map((game: BBGame) => cbbManager.getGameAsTextRow(game))
+            .map((game: BBGame) => `${ReadableDateShort(game.data.date)}: ${game.getGameTextHeader(cbbManager)}`)
             .join('\n');
         msg.channel.send(display_string, {split: true});
     }

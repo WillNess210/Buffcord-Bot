@@ -82,3 +82,9 @@ export const getDiscordJSEmbedObject = (embed: EmbedMessage): discordjs.MessageE
         url: embed.url,
     });
 };
+
+export const BLANK_EMBED_FIELD: EmbedField = {
+    title: '\u200B',
+    value: '\u200B',
+    inline: true
+}

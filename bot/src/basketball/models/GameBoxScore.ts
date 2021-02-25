@@ -1,3 +1,4 @@
+import { EmbedField } from "discord.js";
 import { BBGame } from "./Game";
 
 export interface BBGameBoxScore {
@@ -10,21 +11,37 @@ export interface BBGameBoxScore {
     awayTeam: BBTeamBoxScore;
 }
 
+const blankStats = {
+    field_goals_made: 0,
+    field_goals_att: 0,
+    field_goals_pct: 0,
+    three_points_made: 0,
+    three_points_att: 0,
+    three_points_pct: 0,
+    free_throws_made: 0,
+    free_throws_att: 0,
+    free_throws_pct: 0,
+    personal_fouls: 0,
+}
+
 export const createTeamBoxScore = (data: any): BBTeamBoxScore => {
+    const stats = data.statistics || blankStats;
     return {
         id: data.id,
         points: data.points,
-        field_goals_made: data.statistics.field_goals_made,
-        field_goals_att: data.statistics.field_goats_att,
-        field_goals_pct: data.statistics.field_goals_pct,
-        three_points_made: data.statistics.three_points_made,
-        three_points_att: data.statistics.three_points_att,
-        three_points_pct: data.statistics.three_points_pct,
-        free_throws_made: data.statistics.free_throws_made,
-        free_throws_att: data.statistics.free_throws_att,
-        free_throws_pct: data.statistics.free_throws_pct,
-        personal_fouls: data.statistics.personal_fouls,
-        player_scores: data.players.map((player: any) => createTeamPlayerScore(player)).sort((a: BBPlayerBoxScore, b: BBPlayerBoxScore) => a.points > b.points ? -1 : 1)
+        field_goals_made: stats.field_goals_made,
+        field_goals_att: stats.field_goats_att,
+        field_goals_pct: stats.field_goals_pct,
+        three_points_made: stats.three_points_made,
+        three_points_att: stats.three_points_att,
+        three_points_pct: stats.three_points_pct,
+        free_throws_made: stats.free_throws_made,
+        free_throws_att: stats.free_throws_att,
+        free_throws_pct: stats.free_throws_pct,
+        personal_fouls: stats.personal_fouls,
+        player_scores: data.players 
+            ? data.players.map((player: any) => createTeamPlayerScore(player)).sort((a: BBPlayerBoxScore, b: BBPlayerBoxScore) => a.points > b.points ? -1 : 1)
+            : []
     };
 }
 

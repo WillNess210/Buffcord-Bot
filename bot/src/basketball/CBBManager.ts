@@ -99,19 +99,19 @@ export default class CBBManager {
         // set currentGame
         //this.currentGame = resp.data.find((game: BBGame) => OnSameDay(new Date(), game.date) && (game.homeTeamID === this.options.team_sportsradar || game.awayTeamID === this.options.team_sportsradar));
         this.currentGame = resp.data.find((game: BBGame): boolean => {
-            if (game.homeTeamID === this.options.team.bb_id || game.awayTeamID === this.options.team.bb_id) {
-                return OnSameDay(game.date, new Date());
+            if (game.data.homeTeamID === this.options.team.bb_id || game.data.awayTeamID === this.options.team.bb_id) {
+                return OnSameDay(game.data.date, new Date());
             }
             return false;
         });
-        if (this.currentGame) console.log(`Set currentGame to: ${this.currentGame.awayTeamName} ${this.currentGame.awayTeamID} ${this.currentGame.homeTeamName} ${this.currentGame.homeTeamID} ${ReadableDate(this.currentGame.date || new Date())}`);
+        if (this.currentGame) console.log(`Set currentGame to: ${this.currentGame.data.awayTeamName} ${this.currentGame.data.awayTeamID} ${this.currentGame.data.homeTeamName} ${this.currentGame.data.homeTeamID} ${ReadableDate(this.currentGame.data.date || new Date())}`);
         return resp;
     }
 
     public getTeamSchedule = async (team: string = this.options.team.bb_id): Promise<APIResponse<BBGame[]>> => {
         const resp = await this.getAllGames();
         if (resp.status === ResponseStatus.FAILURE) return resp;
-        const games = resp.data.filter(game => game.homeTeamID === team || game.awayTeamID === team);
+        const games = resp.data.filter(game => game.data.homeTeamID === team || game.data.awayTeamID === team);
         return {
             status: resp.status,
             error: resp.error,
@@ -148,21 +148,6 @@ export default class CBBManager {
         return `${this.getPlayerEmoji(player)}**${player.jersey_number}**. **${player.full_name}** | ${player.grade} ${player.position}`;
     }
 
-    public getGameAsTextRow = (game: BBGame): string => {
-        const teamSplitChar = game.neutral_site ? 'vs' : 'at';
-        const rowPrefix = `${ReadableDateShort(game.date)}: `;
-        if (game.finished) {
-            const awayWon: boolean = game.awayPoints > game.homePoints;
-            const awayTeam =
-                `${this.getTeamEmoji(game.awayTeamID)}${this.getTeamShort(game.awayTeamID, game.awayTeamName)}(${game.awayPoints})`;
-            const homeTeam = 
-            `${this.getTeamEmoji(game.homeTeamID)}${this.getTeamShort(game.homeTeamID, game.homeTeamName)}(${game.homePoints})`;
-            return rowPrefix + `${awayWon ? '**'+awayTeam+'**' : awayTeam} ${teamSplitChar} ${awayWon ? homeTeam : '**'+homeTeam+'**'}`
-        } else {
-            return rowPrefix + `${this.getTeamEmoji(game.awayTeamID)}${this.getTeamShort(game.awayTeamID, game.awayTeamName)} ${teamSplitChar} ${this.getTeamEmoji(game.homeTeamID)}${this.getTeamShort(game.homeTeamID, game.homeTeamName)}`;
-        }
-    }
-
     public getBoxScoreTeamHeader = (team: BBTeam, score: BBTeamBoxScore): string => {
         return `${this.getTeamEmoji(team.id)} **${team.school} ${team.name}** ${score.points}pts ${score.free_throws_pct}FT% ${score.field_goals_pct}FG% ${score.three_points_pct}3P%`;
     }
@@ -174,19 +159,19 @@ export default class CBBManager {
             : ` has no data recorded yet.`);
     }
 
-    private getPlayerEmoji = (player: BBPlayer): string => {
+    public getPlayerEmoji = (player: BBPlayer): string => {
         return player.team_id + player.jersey_number in this.emojis.player_logos 
             ? this.emojis.player_logos[player.team_id + player.jersey_number].emoji
             : this.getTeamEmoji(player.team_id);
     }
 
-    private getTeamEmoji = (team_id: string): string => {
+    public getTeamEmoji = (team_id: string): string => {
         return team_id in this.emojis.team_logos
             ? this.emojis.team_logos[team_id].emoji
             : '';
     }
 
-    private getTeamShort = (team_id: string, backup: string): string => this.options.teams[team_id] ? this.options.teams[team_id].short : backup;
+    public getTeamShort = (team_id: string, backup: string): string => this.options.teams[team_id] ? this.options.teams[team_id].short : backup;
 
     private loadEmojis = () => {
         this.options.team_logos.forEach((emoji: BBTeamEmoji) => this.emojis.team_logos[emoji.team] = emoji);
