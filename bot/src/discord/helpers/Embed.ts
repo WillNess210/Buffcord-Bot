@@ -43,8 +43,10 @@ interface EmbedField {
     inline?: boolean;
 }
 
-export const getDiscordJSEmbedObject = (embed: EmbedMessage): discordjs.MessageEmbed => {
-
+export const getDiscordJSEmbedObject = (embed: EmbedMessage): discordjs.MessageEmbed | string => {
+    if (embed.description.length > 2000) {
+        return embed.description;
+    }
     return new discordjs.MessageEmbed({
         author: embed.author && {
             name: embed.author.name,

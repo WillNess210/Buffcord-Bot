@@ -2,6 +2,7 @@ import * as discordjs from 'discord.js';
 import { cbbManager, DISCORD_CHANNEL_IDS } from '../../..';
 import BBPlayer from '../../../basketball/models/Player';
 import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
+import { EmbedMessage } from '../../helpers/Embed';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
@@ -17,9 +18,14 @@ export class PlayersHandler extends MessageHandler {
             return;
         }
         const players: BBPlayer[] = resp.data;
-        const display_string = 'Players:\n' + players
+        const display_string = players
             .map((player: BBPlayer) => cbbManager.getPlayerAsTextRow(player))
             .join('\n');
-        msg.channel.send(display_string);
+        const embed_msg: EmbedMessage = {
+            title: `Colorado Players`,
+            timestamp: new Date(),
+            description: display_string,
+        };
+        msg.channel.send(display_string, {split: true});
     }
 }
