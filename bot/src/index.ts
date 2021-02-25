@@ -1,18 +1,18 @@
 import { config } from 'dotenv';
 import CBBManager, { CBBManagerOptions } from './basketball/CBBManager';
 import { DiscordBot, DiscordBotOptions } from './discord/DiscordBot';
-import { BoxScoreHandler } from './discord/message_handlers/BoxScoreHandler';
-import { GameHandler } from './discord/message_handlers/GameHandler';
-import { GamesHandler } from './discord/message_handlers/GamesHandler';
-import { ConfHandler } from './discord/message_handlers/ConfHandler';
+import { BoxScoreHandler } from './discord/message_handlers/basketball/BoxScoreHandler';
+import { GameHandler } from './discord/message_handlers/basketball/GameHandler';
+import { GamesHandler } from './discord/message_handlers/basketball/GamesHandler';
+import { ConfHandler } from './discord/message_handlers/basketball/ConfHandler';
 import { PingHandler } from './discord/message_handlers/PingHandler';
-import { PlayersHandler } from './discord/message_handlers/PlayersHandler';
+import { PlayersHandler } from './discord/message_handlers/basketball/PlayersHandler';
 import { HelpHandler } from './discord/message_handlers/HelpHandler';
 import { getSchoolIdMap, SchoolInfo, Schools, SCHOOL_MAP } from './basketball/models/Team';
 import { environment } from './basketball/models/Environment';
 import { all_emojis, EMOJI_MAP } from './basketball/models/Emojis';
-import { TeamHandler } from './discord/message_handlers/TeamHandler';
-import { TeamsHandler } from './discord/message_handlers/TeamsHandler';
+import { TeamHandler } from './discord/message_handlers/basketball/TeamHandler';
+import { TeamsHandler } from './discord/message_handlers/basketball/TeamsHandler';
 
 config();
 const env = process.env.ENV as environment;

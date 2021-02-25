@@ -1,9 +1,9 @@
 import * as discordjs from 'discord.js';
-import { cbbManager } from '../..';
-import { BBGame } from '../../basketball/models/Game';
-import { getAPIErrorMessage, ResponseStatus } from '../../common/APIResponse';
-import { UserCommand } from '../helpers/UserCommand';
-import { MessageHandler } from './MessageHandler';
+import { cbbManager } from '../../..';
+import { BBGame } from '../../../basketball/models/Game';
+import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
+import { UserCommand } from '../../helpers/UserCommand';
+import { MessageHandler } from '../MessageHandler';
 
 export class GamesHandler extends MessageHandler {
     command_string = 'games';

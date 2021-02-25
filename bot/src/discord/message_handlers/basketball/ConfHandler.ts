@@ -1,9 +1,9 @@
 import * as discordjs from 'discord.js';
-import { botOptions, cbbManager } from '../..';
-import { BBTeam, BBTeamMap } from '../../basketball/models/Team';
-import { getAPIErrorMessage, ResponseStatus } from '../../common/APIResponse';
-import { UserCommand } from '../helpers/UserCommand';
-import { MessageHandler } from './MessageHandler';
+import { botOptions, cbbManager } from '../../..';
+import { BBTeam, BBTeamMap } from '../../../basketball/models/Team';
+import { getAPIErrorMessage, ResponseStatus } from '../../../common/APIResponse';
+import { UserCommand } from '../../helpers/UserCommand';
+import { MessageHandler } from '../MessageHandler';
 
 export class ConfHandler extends MessageHandler {
     private defaultConference = 'PAC12';

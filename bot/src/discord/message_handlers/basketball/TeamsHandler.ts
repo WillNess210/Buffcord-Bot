@@ -1,10 +1,10 @@
 import * as discordjs from 'discord.js';
-import {cbbManager } from '../..';
-import { EMOJI_MAP } from '../../basketball/models/Emojis';
-import { SchoolInfo, Schools, SCHOOL_MAP } from '../../basketball/models/Team';
-import { EmbedMessage, getDiscordJSEmbedObject } from '../helpers/Embed';
-import { UserCommand } from '../helpers/UserCommand';
-import { MessageHandler } from './MessageHandler';
+import {cbbManager } from '../../..';
+import { EMOJI_MAP } from '../../../basketball/models/Emojis';
+import { SchoolInfo, Schools, SCHOOL_MAP } from '../../../basketball/models/Team';
+import { EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
+import { UserCommand } from '../../helpers/UserCommand';
+import { MessageHandler } from '../MessageHandler';
 
 export class TeamsHandler extends MessageHandler {
     command_string = 'teams';
