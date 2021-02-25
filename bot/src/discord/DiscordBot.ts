@@ -59,12 +59,23 @@ export class DiscordBot {
         if (msg_content.charAt(0) !== commandPrefix || msg_content.length === 1) return;
 
         const user_command = messageContentToUserCommand(commandPrefix, msg_content);
-        if(!Object.values(DISCORD_CHANNEL_IDS).includes(msg.channel.id) && msg.content != `${botOptions.commandPrefix}help`) return;
-        if (!(user_command.command in this.commandHandlers)) {
+        const command_handler = this.commandHandlers[user_command.command];
+        const is_help_command = !!command_handler && user_command.command === 'help';
+        
+        if (!command_handler && Object.values(DISCORD_CHANNEL_IDS).includes(msg.channel.id)) {
             msg.reply(this.commandNotFoundError(user_command));
             return;
         }
-        const command_handler = this.commandHandlers[user_command.command];
+        if (!command_handler) return;
+        const in_wrong_channel = command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id);
+        if (in_wrong_channel || (command_handler.command_string === 'help' && Object.values(DISCORD_CHANNEL_IDS).every((id: string) => id !== msg.channel.id))) {
+            const in_both_channels = command_handler.channels.includes(DISCORD_CHANNEL_IDS.basketball) && command_handler.channels.includes(DISCORD_CHANNEL_IDS.football);
+            const to_try_in = in_both_channels || user_command.command === 'help'
+                ? ` ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.football)} for football and ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.basketball)} for basketball.`
+                : command_handler.channels.includes(DISCORD_CHANNEL_IDS.basketball) ? `${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.basketball)}` : `${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.football)}`;
+            msg.reply(`I do not work in this channel. Try this command in ${to_try_in}`);
+            return;
+        }
         if(command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id)) return;
         this.commandHandlers[user_command.command].handleMessage(msg, user_command);
     }
