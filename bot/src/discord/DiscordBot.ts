@@ -1,6 +1,7 @@
 import * as discordjs from 'discord.js';
 import { MessageHandler } from './message_handlers/MessageHandler';
 import { messageContentToUserCommand, UserCommand } from './helpers/UserCommand';
+import { botOptions, DISCORD_CHANNEL_IDS } from '..';
 
 export interface DiscordBotOptions {
     DISCORD_BOT_TOKEN: string;
@@ -50,7 +51,7 @@ export class DiscordBot {
         });
     }
 
-    private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized.`;
+    private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized. Type ~help for a list of commands.`;
 
     private handleMessage = (commandPrefix: string, msg: discordjs.Message) => {
         const msg_content = msg.content;
@@ -58,6 +59,7 @@ export class DiscordBot {
         if (msg_content.charAt(0) !== commandPrefix || msg_content.length === 1) return;
 
         const user_command = messageContentToUserCommand(commandPrefix, msg_content);
+        if(!Object.values(DISCORD_CHANNEL_IDS).includes(msg.channel.id) && msg.content != `${botOptions.commandPrefix}help`) return;
         if (!(user_command.command in this.commandHandlers)) {
             msg.reply(this.commandNotFoundError(user_command));
             return;

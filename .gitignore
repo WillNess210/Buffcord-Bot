@@ -2,3 +2,4 @@ bot/node_modules
 bot/.env
 emojis
 dev_notes.txt
+*.pem
