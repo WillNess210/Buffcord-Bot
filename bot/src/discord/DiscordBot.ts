@@ -54,6 +54,7 @@ export class DiscordBot {
     private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized. Type ~help for a list of commands.`;
 
     private handleMessage = (commandPrefix: string, msg: discordjs.Message) => {
+        if(msg.guild.id !== this.options.DISCORD_GUILD_ID) return;
         const msg_content = msg.content;
         // if message isn't a command or is only the command prefix, return
         if (msg_content.charAt(0) !== commandPrefix || msg_content.length === 1) return;
