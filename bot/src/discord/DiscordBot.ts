@@ -5,7 +5,6 @@ import { messageContentToUserCommand, UserCommand } from './helpers/UserCommand'
 export interface DiscordBotOptions {
     DISCORD_BOT_TOKEN: string;
     DISCORD_GUILD_ID: string;
-    DISCORD_CHANNELS: string[];
     commandPrefix: string;
     commandHandlers: MessageHandler[];
 }
@@ -54,7 +53,6 @@ export class DiscordBot {
     private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized.`;
 
     private handleMessage = (commandPrefix: string, msg: discordjs.Message) => {
-        if (! (this.options.DISCORD_CHANNELS.find((channel: string) => channel === msg.channel.id))) return;
         const msg_content = msg.content;
         // if message isn't a command or is only the command prefix, return
         if (msg_content.charAt(0) !== commandPrefix || msg_content.length === 1) return;
@@ -64,6 +62,8 @@ export class DiscordBot {
             msg.reply(this.commandNotFoundError(user_command));
             return;
         }
+        const command_handler = this.commandHandlers[user_command.command];
+        if(command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id)) return;
         this.commandHandlers[user_command.command].handleMessage(msg, user_command);
     }
 }

@@ -46,21 +46,25 @@ export const cbbManager = new CBBManager(cbbOptions);
 export const botOptions: DiscordBotOptions = {
     DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
     DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID,
-    DISCORD_CHANNELS: process.env.DISCORD_CHANNELS.split(','),
     commandPrefix: process.env.COMMAND_PREFIX,
     commandHandlers: []
 };
+
+export const DISCORD_CHANNEL_IDS = {
+    basketball: process.env.DISCORD_CHANNEL_BASKETBALL,
+    football: process.env.DISCORD_CHANNEL_FOOTBALL
+};
 // set commandHandlers after botOptions creation so the handlers can have access to the config
 const handlers = [
-    new PingHandler(),
-    new PlayersHandler(),
-    new GamesHandler(),
-    new BoxScoreHandler(),
-    new GameHandler(),
-    new ConfHandler(),
-    new HelpHandler(),
-    new TeamHandler(),
-    new TeamsHandler(),
+    new PingHandler([]),
+    new PlayersHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new GamesHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new BoxScoreHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new GameHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new ConfHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new HelpHandler([]),
+    new TeamHandler([DISCORD_CHANNEL_IDS.basketball]),
+    new TeamsHandler([DISCORD_CHANNEL_IDS.basketball]),
 ];
 botOptions.commandHandlers = handlers;
 
