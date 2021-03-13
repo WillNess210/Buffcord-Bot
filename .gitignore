@@ -3,3 +3,4 @@ bot/.env
 emojis
 dev_notes.txt
 *.pem
+bot/dist
