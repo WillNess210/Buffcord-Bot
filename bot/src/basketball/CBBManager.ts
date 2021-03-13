@@ -1,12 +1,13 @@
 import { APIResponse, getAPISuccess, ResponseStatus } from "../common/APIResponse";
 import CachedDataManager, { CacheStrategies } from "../common/CachedDataManager";
 import { OnSameDay, ReadableDate, ReadableDateShort, SportsDataDate } from "../common/DateHelper";
-import SportsRadarAPI from "./SportsRadarAPI";
+import SportsRadarAPI, { ncaamb_season } from "./SportsRadarAPI";
 import APIBasketball from "./SportsRadarAPI";
 import { BBGame } from "./models/Game";
 import BBPlayer, { BBPlayerEmoji } from "./models/Player";
 import { SchoolInfo, BBTeam, BBTeamEmoji, BBTeamMap, BBTeamsToMap, SchoolIDMap } from "./models/Team";
 import { BBGameBoxScore, BBPlayerBoxScore, BBTeamBoxScore } from "./models/GameBoxScore";
+import { SEASON_DATES } from "./Dates";
 
 export interface CBBManagerOptions {
     team: SchoolInfo;
@@ -93,19 +94,31 @@ export default class CBBManager {
         if (this.cachedData.isCached(cache_key)) {
             return getAPISuccess(this.cachedData.getData(cache_key));
         }
-        const resp = await this.sportsRadarAPI.getAllGames();
-        if (resp.status === ResponseStatus.FAILURE) return resp;
-        this.cachedData.addCachedData(cache_key, resp.data, CacheStrategies.NewDay);
+        const today = new Date();
+        const resp = await this.sportsRadarAPI.getAllGames(ncaamb_season.REG);
+        const respCT = today >= SEASON_DATES.CT
+            ? await this.sportsRadarAPI.getAllGames(ncaamb_season.CT)
+            : {status: ResponseStatus.SUCCESS, error: '', data: []};
+        const respPST = today >= SEASON_DATES.PST
+            ? await this.sportsRadarAPI.getAllGames(ncaamb_season.PST)
+            : {status: ResponseStatus.SUCCESS, error: '', data: []};
+        if (resp.status === ResponseStatus.FAILURE || respCT.status === ResponseStatus.FAILURE || respPST.status === ResponseStatus.FAILURE) return resp;
+        const all_games = [...resp.data, ...respCT.data, ...respPST.data];
+        this.cachedData.addCachedData(cache_key, all_games, CacheStrategies.NewDay);
         // set currentGame
         //this.currentGame = resp.data.find((game: BBGame) => OnSameDay(new Date(), game.date) && (game.homeTeamID === this.options.team_sportsradar || game.awayTeamID === this.options.team_sportsradar));
-        this.currentGame = resp.data.find((game: BBGame): boolean => {
+        this.currentGame = all_games.find((game: BBGame): boolean => {
             if (game.data.homeTeamID === this.options.team.bb_id || game.data.awayTeamID === this.options.team.bb_id) {
                 return OnSameDay(game.data.date, new Date());
             }
             return false;
         });
         if (this.currentGame) console.log(`Set currentGame to: ${this.currentGame.data.awayTeamName} ${this.currentGame.data.awayTeamID} ${this.currentGame.data.homeTeamName} ${this.currentGame.data.homeTeamID} ${ReadableDate(this.currentGame.data.date || new Date())}`);
-        return resp;
+        return {
+            status: ResponseStatus.SUCCESS,
+            error: '',
+            data: all_games
+        };
     }
 
     public getTeamSchedule = async (team: string = this.options.team.bb_id): Promise<APIResponse<BBGame[]>> => {

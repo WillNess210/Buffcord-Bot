@@ -20,13 +20,17 @@ export class GamesHandler extends MessageHandler {
         }
         const games: BBGame[] = resp.data;
         const display_string = games
-            .map((game: BBGame) => `${ReadableDateShort(game.data.date)}: ${game.getGameTextHeader(cbbManager)}`)
-            .join('\n');
-        const embed_msg: EmbedMessage = {
-            title: `Colorado Games`,
-            timestamp: new Date(),
-            description: display_string,
-        };
-        msg.channel.send(getDiscordJSEmbedObject(embed_msg), {split: true});
+        .map((game: BBGame) => `${ReadableDateShort(game.data.date)}: ${game.getGameTextHeader(cbbManager)}`)
+        .join('\n');
+        if(display_string.length > 2000) {
+            msg.channel.send(display_string, {split: true});
+        } else {
+            const embed_msg: EmbedMessage = {
+                title: `Colorado Games`,
+                timestamp: new Date(),
+                description: display_string,
+            };
+            msg.channel.send(getDiscordJSEmbedObject(embed_msg));
+        }
     }
 }

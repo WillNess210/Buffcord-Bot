@@ -10,6 +10,12 @@ export interface SportsRadarAPIOptions {
     season: string;
 }
 
+export enum ncaamb_season {
+    CT = "CT",
+    REG = "REG",
+    PST = "PST"
+}
+
 export default class SportsRadarAPI {
     private key: string;
     private season: string;
@@ -59,8 +65,8 @@ export default class SportsRadarAPI {
         }
     }
 
-    public getAllGames = async (): Promise<APIResponse<BBGame[]>> => {
-        const api = `games/${this.season}/REG/schedule`;
+    public getAllGames = async (season_type: ncaamb_season): Promise<APIResponse<BBGame[]>> => {
+        const api = `games/${this.season}/${season_type}/schedule`;
         const resp = (await this.fetchAPI(api) as APIResponse<any>);
         if (resp.status === ResponseStatus.SUCCESS) {
             const all_games: BBGame[] = [];
