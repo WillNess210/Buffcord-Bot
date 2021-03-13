@@ -1,5 +1,4 @@
-import { ReadableDateShort } from "../../common/DateHelper";
-import CBBManager from "../CBBManager";
+import CBBManager, { ncaamb_season } from "../CBBManager";
 
 export interface BBGameModel {
     id: string;
@@ -14,6 +13,13 @@ export interface BBGameModel {
     homeWon: boolean;
     awayPoints: number;
     homePoints: number;
+    seasonType: ncaamb_season;
+}
+
+const seasonTypePrefixes = {
+    [ncaamb_season.REG]: '',
+    [ncaamb_season.CT]: '(CONF) ',
+    [ncaamb_season.PST]: '(MM) '
 }
 
 export class BBGame {
@@ -40,9 +46,9 @@ export class BBGame {
                 `${cbbManager.getTeamEmoji(this.data.awayTeamID)}${cbbManager.getTeamShort(this.data.awayTeamID, this.data.awayTeamName)}(${this.data.awayPoints})`;
             const homeTeam = 
             `${cbbManager.getTeamEmoji(this.data.homeTeamID)}${cbbManager.getTeamShort(this.data.homeTeamID, this.data.homeTeamName)}(${this.data.homePoints})`;
-            return `${awayWon ? '**'+awayTeam+'**' : awayTeam} ${teamSplitChar} ${awayWon ? homeTeam : '**'+homeTeam+'**'}`
+            return `${seasonTypePrefixes[this.data.seasonType]}${awayWon ? '**'+awayTeam+'**' : awayTeam} ${teamSplitChar} ${awayWon ? homeTeam : '**'+homeTeam+'**'}`
         } else {
-            return `${cbbManager.getTeamEmoji(this.data.awayTeamID)}${cbbManager.getTeamShort(this.data.awayTeamID, this.data.awayTeamName)} ${teamSplitChar} ${cbbManager.getTeamEmoji(this.data.homeTeamID)}${cbbManager.getTeamShort(this.data.homeTeamID, this.data.homeTeamName)}`;
+            return `${seasonTypePrefixes[this.data.seasonType]}${cbbManager.getTeamEmoji(this.data.awayTeamID)}${cbbManager.getTeamShort(this.data.awayTeamID, this.data.awayTeamName)} ${teamSplitChar} ${cbbManager.getTeamEmoji(this.data.homeTeamID)}${cbbManager.getTeamShort(this.data.homeTeamID, this.data.homeTeamName)}`;
         }
     }
 }

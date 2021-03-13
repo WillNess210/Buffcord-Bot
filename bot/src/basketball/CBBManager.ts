@@ -1,7 +1,7 @@
 import { APIResponse, getAPISuccess, ResponseStatus } from "../common/APIResponse";
 import CachedDataManager, { CacheStrategies } from "../common/CachedDataManager";
 import { OnSameDay, ReadableDate, ReadableDateShort, SportsDataDate } from "../common/DateHelper";
-import SportsRadarAPI, { ncaamb_season } from "./SportsRadarAPI";
+import SportsRadarAPI from "./SportsRadarAPI";
 import APIBasketball from "./SportsRadarAPI";
 import { BBGame } from "./models/Game";
 import BBPlayer, { BBPlayerEmoji } from "./models/Player";
@@ -17,6 +17,12 @@ export interface CBBManagerOptions {
     team_logos: BBTeamEmoji[];
     player_logos: BBPlayerEmoji[];
 };
+
+export const enum ncaamb_season {
+    CT = "CT",
+    REG = "REG",
+    PST = "PST"
+}
 
 interface DisplayEmojis {
     team_logos: { [key: string]: BBTeamEmoji; };

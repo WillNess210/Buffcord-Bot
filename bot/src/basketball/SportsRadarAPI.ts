@@ -1,5 +1,6 @@
 import axios from "axios";
 import { APIResponse, ResponseStatus } from "../common/APIResponse";
+import { ncaamb_season } from "./CBBManager";
 import { BBGame, BBGameModel } from "./models/Game";
 import { BBGameBoxScore, createTeamBoxScore } from "./models/GameBoxScore";
 import BBPlayer from "./models/Player";
@@ -8,12 +9,6 @@ import { BBTeam, SchoolIDMap } from "./models/Team";
 export interface SportsRadarAPIOptions {
     SPORTSRADAR_TOKEN: string;
     season: string;
-}
-
-export enum ncaamb_season {
-    CT = "CT",
-    REG = "REG",
-    PST = "PST"
 }
 
 export default class SportsRadarAPI {
@@ -84,7 +79,8 @@ export default class SportsRadarAPI {
                         neutral_site: game.neutral_site || false,
                         homeWon: 'home_points' in game && game.home_points >= game.away_points,
                         homePoints: game.home_points || 0,
-                        awayPoints: game.away_points || 0
+                        awayPoints: game.away_points || 0,
+                        seasonType: season_type
                     } as BBGameModel));
             });
             const sorted_games: BBGame[] = all_games
