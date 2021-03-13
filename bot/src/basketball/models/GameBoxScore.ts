@@ -40,8 +40,14 @@ export const createTeamBoxScore = (data: any): BBTeamBoxScore => {
         free_throws_pct: stats.free_throws_pct,
         personal_fouls: stats.personal_fouls,
         player_scores: data.players 
-            ? data.players.map((player: any) => createTeamPlayerScore(player)).sort((a: BBPlayerBoxScore, b: BBPlayerBoxScore) => a.points > b.points ? -1 : 1)
-            : []
+            ? data.players
+                .map((player: any) => createTeamPlayerScore(player))
+                .sort((a: BBPlayerBoxScore, b: BBPlayerBoxScore) => {
+                    const a_actions = a.points + a.assists + a.rebounds;
+                    const b_actions = b.points + b.assists + b.rebounds;
+                    return (a_actions > b_actions) ? -1 : 1;
+                })
+                : []
     };
 }
 
