@@ -71,7 +71,6 @@ export class DiscordBot {
         if(command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id)) return;
         msg.channel.startTyping();
         await this.commandHandlers[user_command.command].handleMessage(msg, user_command);
-        console.log('stopping typing');
         msg.channel.stopTyping();
     }
 }
