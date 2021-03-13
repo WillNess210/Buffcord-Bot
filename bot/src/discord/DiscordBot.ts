@@ -5,7 +5,7 @@ import { botOptions, DISCORD_CHANNEL_IDS } from '..';
 
 export interface DiscordBotOptions {
     DISCORD_BOT_TOKEN: string;
-    DISCORD_GUILD_ID: string;
+    DISCORD_GUILD_ID: string[];
     commandPrefix: string;
     commandHandlers: MessageHandler[];
 }
@@ -30,7 +30,7 @@ export class DiscordBot {
     }
 
     private fetchBuffcord = async () => {
-        this.buffcord = await this.discordjsBot.guilds.fetch(this.options.DISCORD_GUILD_ID);
+        //this.buffcord = await this.discordjsBot.guilds.fetch(this.options.DISCORD_GUILD_ID);
     }
 
     private setupDiscordJSBot = () => {
@@ -51,10 +51,10 @@ export class DiscordBot {
         });
     }
 
-    private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized. Type ~help for a list of commands.`;
+    private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized. Type ${botOptions.commandPrefix}help for a list of commands.`;
 
-    private handleMessage = (commandPrefix: string, msg: discordjs.Message) => {
-        if(msg.guild.id !== this.options.DISCORD_GUILD_ID) return;
+    private handleMessage = async (commandPrefix: string, msg: discordjs.Message) => {
+        if(!this.options.DISCORD_GUILD_ID.includes(msg.guild.id)) return;
         const msg_content = msg.content;
         // if message isn't a command or is only the command prefix, return
         if (msg_content.charAt(0) !== commandPrefix || msg_content.length === 1) return;
@@ -63,21 +63,15 @@ export class DiscordBot {
         const command_handler = this.commandHandlers[user_command.command];
         const is_help_command = !!command_handler && user_command.command === 'help';
         
-        if (!command_handler && Object.values(DISCORD_CHANNEL_IDS).includes(msg.channel.id)) {
+        if (!command_handler && [...DISCORD_CHANNEL_IDS.basketball, ...DISCORD_CHANNEL_IDS.football].includes(msg.channel.id)) {
             msg.reply(this.commandNotFoundError(user_command));
             return;
         }
         if (!command_handler) return;
-        const in_wrong_channel = command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id);
-        if (in_wrong_channel || (command_handler.command_string === 'help' && Object.values(DISCORD_CHANNEL_IDS).every((id: string) => id !== msg.channel.id))) {
-            const in_both_channels = command_handler.channels.includes(DISCORD_CHANNEL_IDS.basketball) && command_handler.channels.includes(DISCORD_CHANNEL_IDS.football);
-            const to_try_in = in_both_channels || user_command.command === 'help'
-                ? ` ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.football)} for football and ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.basketball)} for basketball.`
-                : command_handler.channels.includes(DISCORD_CHANNEL_IDS.basketball) ? `${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.basketball)}` : `${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.football)}`;
-            msg.reply(`I do not work in this channel. Try this command in ${to_try_in}`);
-            return;
-        }
         if(command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id)) return;
-        this.commandHandlers[user_command.command].handleMessage(msg, user_command);
+        msg.channel.startTyping();
+        await this.commandHandlers[user_command.command].handleMessage(msg, user_command);
+        console.log('stopping typing');
+        msg.channel.stopTyping();
     }
 }

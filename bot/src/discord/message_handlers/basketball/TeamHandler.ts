@@ -10,7 +10,7 @@ export class TeamHandler extends MessageHandler {
     command_string = 'team';
     description = 'Displays information about a team.';
     usage = '[team code] (use !teams for list of team codes)';
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const resp = await cbbManager.getAllTeams();

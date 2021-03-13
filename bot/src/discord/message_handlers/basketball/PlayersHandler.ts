@@ -9,7 +9,7 @@ import { MessageHandler } from '../MessageHandler';
 export class PlayersHandler extends MessageHandler {
     command_string = 'players';
     description = 'Displays all current players on roster.';
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const resp = await cbbManager.getTeamPlayers();

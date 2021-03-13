@@ -39,7 +39,7 @@ export const getTeamGameScoreEmbed = (team: BBTeam, team_score: BBTeamBoxScore, 
 export class BoxScoreHandler extends MessageHandler {
     command_string = 'box';
     description = 'Displays the box score for the current game.';
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const respBS = await cbbManager.getGameBoxScore();

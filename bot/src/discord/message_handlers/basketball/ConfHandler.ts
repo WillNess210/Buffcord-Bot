@@ -11,7 +11,7 @@ export class ConfHandler extends MessageHandler {
     command_string = 'conf';
     description = 'Displays conference standings.'
     usage = `[conference_code]  (if conference_code is left blank, ${this.defaultConference} is default)`;
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const conference = userCommand.args.length === 0

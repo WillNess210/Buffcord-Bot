@@ -9,7 +9,7 @@ import { MessageHandler } from '../MessageHandler';
 export class ConfsHandler extends MessageHandler {
     command_string = 'confs';
     description = 'Displays all conference codes.'
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const resp = await cbbManager.getAllTeams();

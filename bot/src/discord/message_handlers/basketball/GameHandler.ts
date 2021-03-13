@@ -47,7 +47,7 @@ const getGameEmbed = (game: BBGame, homeTeam: BBTeam, homeScore: BBTeamBoxScore,
 export class GameHandler extends MessageHandler {
     command_string = 'game';
     description = 'Displays stats for the current game.';
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const respBS = await cbbManager.getGameBoxScore();

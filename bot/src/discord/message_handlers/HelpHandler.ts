@@ -9,8 +9,8 @@ export class HelpHandler extends MessageHandler {
     channels = [];
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand): Promise<any> {
-        const request_channel = Object.values(DISCORD_CHANNEL_IDS).find((id: string) => id === msg.channel.id);
-        if (!request_channel) return msg.channel.send(`I do not work in this channel. Try this command in ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.football)} for football and ${msg.guild.channels.cache.get(DISCORD_CHANNEL_IDS.basketball)} for basketball.`);
+        const request_channel = [...DISCORD_CHANNEL_IDS.basketball, ...DISCORD_CHANNEL_IDS.football].find((id: string) => id === msg.channel.id);
+        if (!request_channel) return msg.channel.send(`I do not work in this channel.`);
         const display_string = '**Commands**:\n' + 
             botOptions.commandHandlers
                 .filter((handler: MessageHandler) => !handler.hideInHelpMenu && (handler.channels.length === 0 || handler.channels.includes(request_channel)))

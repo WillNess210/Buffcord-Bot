@@ -62,14 +62,14 @@ export const cbbManager = new CBBManager(cbbOptions);
 // SETTING UP BOT
 export const botOptions: DiscordBotOptions = {
     DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
-    DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID,
+    DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID.split(','),
     commandPrefix: process.env.COMMAND_PREFIX,
     commandHandlers: []
 };
 
 export const DISCORD_CHANNEL_IDS = {
-    basketball: process.env.DISCORD_CHANNEL_BASKETBALL,
-    football: process.env.DISCORD_CHANNEL_FOOTBALL
+    basketball: process.env.DISCORD_CHANNEL_BASKETBALL.split(','),
+    football: process.env.DISCORD_CHANNEL_FOOTBALL.split(',')
 };
 // set commandHandlers after botOptions creation so the handlers can have access to the config
 const handlers = [

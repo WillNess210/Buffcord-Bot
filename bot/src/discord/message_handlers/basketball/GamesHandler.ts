@@ -10,7 +10,7 @@ import { MessageHandler } from '../MessageHandler';
 export class GamesHandler extends MessageHandler {
     command_string = 'games';
     description = 'Displays the current season\'s schedule.';
-    channels = [DISCORD_CHANNEL_IDS.basketball];
+    channels = DISCORD_CHANNEL_IDS.basketball;
     
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
         const resp = await cbbManager.getTeamSchedule();
