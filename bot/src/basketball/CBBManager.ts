@@ -160,7 +160,7 @@ export default class CBBManager {
     }
 
     public getTeamAsTextRow = (team: BBTeam): string => {
-        return `${this.getTeamEmoji(team.id)}${team.school} ${team.name} (${team.wins}-${team.losses})`;
+        return `${this.getTeamEmoji(team.id)} ${team.school} ${team.name} (${team.wins}-${team.losses})`;
     }
 
     public getPlayerAsTextRow = (player: BBPlayer): string => {
