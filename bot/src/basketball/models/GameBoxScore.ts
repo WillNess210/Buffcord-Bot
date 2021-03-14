@@ -12,6 +12,7 @@ export interface BBGameBoxScore {
 }
 
 const blankStats = {
+    minutes: 0,
     field_goals_made: 0,
     field_goals_att: 0,
     field_goals_pct: 0,
@@ -68,28 +69,29 @@ export interface BBTeamBoxScore {
 }
 
 export const createTeamPlayerScore = (data: any): BBPlayerBoxScore => {
+    const statistics = data.statistics || blankStats
     return {
         id: data.id,
         played: data.played,
         active: data.active,
         starter: data.starter,
-        minutes: data.statistics.minutes,
-        field_goals_made: data.statistics.field_goals_made,
-        field_goals_att: data.statistics.field_goats_att,
-        field_goals_pct: data.statistics.field_goals_pct,
-        three_points_made: data.statistics.three_points_made,
-        three_points_att: data.statistics.three_points_att,
-        three_points_pct: data.statistics.three_points_pct,
-        free_throws_made: data.statistics.free_throws_made,
-        free_throws_att: data.statistics.free_throws_att,
-        free_throws_pct: data.statistics.free_throws_pct,
-        rebounds: data.statistics.rebounds,
-        assists: data.statistics.assists,
-        turnovers: data.statistics.turnovers,
-        steals: data.statistics.steals,
-        blocks: data.statistics.blocks,
-        personal_fouls: data.statistics.personal_fouls,
-        points: data.statistics.points
+        minutes: statistics.minutes,
+        field_goals_made: statistics.field_goals_made,
+        field_goals_att: statistics.field_goats_att,
+        field_goals_pct: statistics.field_goals_pct,
+        three_points_made: statistics.three_points_made,
+        three_points_att: statistics.three_points_att,
+        three_points_pct: statistics.three_points_pct,
+        free_throws_made: statistics.free_throws_made,
+        free_throws_att: statistics.free_throws_att,
+        free_throws_pct: statistics.free_throws_pct,
+        rebounds: statistics.rebounds,
+        assists: statistics.assists,
+        turnovers: statistics.turnovers,
+        steals: statistics.steals,
+        blocks: statistics.blocks,
+        personal_fouls: statistics.personal_fouls,
+        points: statistics.points
     };
 }
 
