@@ -14,7 +14,9 @@ export const getTeamGameScoreEmbed = (team: BBTeam, team_score: BBTeamBoxScore, 
         description: team_score.player_scores.length === 0 ? 'No player data' : team_score
             .player_scores
             .map(score => cbbManager.getBoxScoreAsTextRow(players[score.id], score)).join('\n'),
-        color: team.schoolInfo.color.getInt(),
+        color: team.schoolInfo && team.schoolInfo.color 
+            ? team.schoolInfo.color.getInt()
+            : 0,
         timestamp: new Date(),
         thumbnail: {
             url: team.schoolInfo.logo_url,
