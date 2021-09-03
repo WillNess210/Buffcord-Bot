@@ -8,9 +8,9 @@ export class MessageHandler {
     description: string; // Set this in each class! Will be displayed in the help command
     usage?: string; // Set this in each class (optional)! Will be displayed after the string "Usage: [prefix][command_stirng]" (ex: "Usage: ~help ")
     channels: string[]; // Set this in each class. Leave blank if command applies to all channels
-    hideInHelpMenu?: boolean;
+    hideInHelpMenu?: boolean; // Set this for this message to never appear in a help menu
 
-    async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
+    async handleMessage (msg: discordjs.Message, userCommand: UserCommand): Promise<any> {
         console.log(`Undefined message handler ${this.command_string} received ${msg.content}`);
     }
 }

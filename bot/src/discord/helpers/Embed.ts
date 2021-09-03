@@ -1,5 +1,4 @@
 import * as discordjs from "discord.js";
-import { Schools, SCHOOL_MAP } from "../../basketball/models/Team";
 
 export interface EmbedMessage {
     title?: string;
@@ -67,7 +66,7 @@ export const getDiscordJSEmbedObject = (embed: EmbedMessage): discordjs.MessageE
             iconURL: embed.footer.icon_url
         } || {
             text: "Buffcord",
-            icon_url: SCHOOL_MAP[Schools.colorado].logo_url
+            //icon_url: SCHOOL_MAP[Schools.colorado].logo_url TODO
         },
         image: embed.image && {
             url: embed.image.url,

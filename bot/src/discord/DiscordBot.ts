@@ -10,11 +10,6 @@ export interface DiscordBotOptions {
     commandHandlers: MessageHandler[];
 }
 
-export interface DiscordEmoji {
-    key: string;
-    msg: string;
-}
-
 export class DiscordBot {
     private discordjsBot: discordjs.Client;
     private buffcord: discordjs.Guild;
@@ -70,7 +65,11 @@ export class DiscordBot {
         if (!command_handler) return;
         if(command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id)) return;
         msg.channel.startTyping();
-        await this.commandHandlers[user_command.command].handleMessage(msg, user_command);
+        try {
+            await this.commandHandlers[user_command.command].handleMessage(msg, user_command);
+        } catch (err: any) {
+            msg.channel.send(`An API error occured. Please let Will know.\n${err}`);
+        }
         msg.channel.stopTyping();
     }
 }

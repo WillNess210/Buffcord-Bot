@@ -1,7 +1,7 @@
 import * as discordjs from 'discord.js';
-import { EmbedMessage, getDiscordJSEmbedObject } from '../helpers/Embed';
-import { UserCommand } from '../helpers/UserCommand';
-import { MessageHandler } from './MessageHandler';
+import { EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
+import { UserCommand } from '../../helpers/UserCommand';
+import { MessageHandler } from '../MessageHandler';
 
 export class PingHandler extends MessageHandler {
     command_string = 'ping';

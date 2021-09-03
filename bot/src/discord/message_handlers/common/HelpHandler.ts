@@ -1,7 +1,7 @@
 import * as discordjs from 'discord.js';
-import { botOptions, DISCORD_CHANNEL_IDS } from '../..';
-import { UserCommand } from '../helpers/UserCommand';
-import { MessageHandler } from './MessageHandler';
+import { botOptions, DISCORD_CHANNEL_IDS } from '../../..';
+import { UserCommand } from '../../helpers/UserCommand';
+import { MessageHandler } from '../MessageHandler';
 
 export class HelpHandler extends MessageHandler {
     command_string = 'help';
