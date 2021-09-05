@@ -15,7 +15,7 @@ interface RosterRequest {
 
 export class FBRosterHandler extends MessageHandler {
     commandString = 'roster';
-    description = 'Displays the current roster. (use \`${botOptions.commandPrefix}teams\` to get a list of teams)';
+    description = `Displays the current roster. (use \`${botOptions.commandPrefix}teams\` to get a list of teams)`;
     usage = [{
         command: "roster [team]",
         description: `to view a teams positions`
