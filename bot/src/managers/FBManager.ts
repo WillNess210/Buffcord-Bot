@@ -1,4 +1,4 @@
-import { RosterResponse } from "../apis/football/models";
+import { PlayersEntity, RosterResponse } from "../apis/football/models";
 import SportsRadarAPI from "../apis/football/SportsRadarAPI";
 import { getCollegeInformation } from "../colleges/info";
 import { College, CollegeInformation } from "../colleges/model";
@@ -6,14 +6,12 @@ import { APIResponse } from "../common/APIResponse";
 import CachedDataManager, { CacheStrategies } from "../common/CachedDataManager";
 
 export interface FBManagerOptions {
-    defaultTeam: College;
     token: string;
     season: string;
 }
 
 export default class FBManager {
     private sportsRadarApi: SportsRadarAPI;
-    private defaultTeam: CollegeInformation;
     private cachedData: CachedDataManager;
 
     constructor(options: FBManagerOptions) {
@@ -21,7 +19,6 @@ export default class FBManager {
             token: options.token,
             season: options.season
         });
-        this.defaultTeam = getCollegeInformation(options.defaultTeam);
         this.cachedData = new CachedDataManager(); 
     }
 
@@ -31,7 +28,7 @@ export default class FBManager {
         return resp.data;
     }
 
-    public getRoster = async(team: CollegeInformation = this.defaultTeam): Promise<RosterResponse> => {
+    public getRoster = async(team: CollegeInformation): Promise<RosterResponse> => {
         return this.throwAPIErrorIfFailure(
             this.cachedData.getResponse(
                 `roster-${team.college}`,

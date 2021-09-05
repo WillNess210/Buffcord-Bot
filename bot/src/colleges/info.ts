@@ -2,7 +2,8 @@ import { DiscordEmoji } from "../discord/DiscordEmoji";
 import { DiscordColor } from "../discord/helpers/Color";
 import { College, CollegeInformation } from "./model";
 
-export type CollegeMap = { [id in College]: CollegeInformation; };
+type CollegeMap = { [id in College]: CollegeInformation; };
+type CustomCollegeMap = { [key: string]: CollegeInformation; };
 
 export const COLLEGES: CollegeInformation[] = [
     {
@@ -134,9 +135,17 @@ export const COLLEGES: CollegeInformation[] = [
     }
 ];
 
-const COLLEGE_MAP = {}
+const COLLEGE_MAP = {} as CollegeMap;
 COLLEGES.forEach(college => COLLEGE_MAP[college.college] = college);
 
-export const getCollegeInformation = (college: College) => {
+export const COLLEGE_SHORT_MAP = {} as CustomCollegeMap;
+COLLEGES.forEach(college => COLLEGE_SHORT_MAP[college.short] = college);
+
+export const getCollegeInformation = (college: College): CollegeInformation => {
     return COLLEGE_MAP[college];
+}
+
+export const getCollegeInformationFromShort = (short: string): CollegeInformation | null => {
+    const cshort = short.toUpperCase();
+    return cshort in COLLEGE_SHORT_MAP ? COLLEGE_SHORT_MAP[cshort] : null;
 }

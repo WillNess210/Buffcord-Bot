@@ -36,7 +36,7 @@ interface EmbedAuthor {
     icon_url?: string;
 }
 
-interface EmbedField {
+export interface EmbedField {
     title?: string;
     value?: string;
     inline?: boolean;

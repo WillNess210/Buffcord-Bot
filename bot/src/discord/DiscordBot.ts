@@ -25,7 +25,7 @@ export class DiscordBot {
     }
 
     private fetchBuffcord = async () => {
-        //this.buffcord = await this.discordjsBot.guilds.fetch(this.options.DISCORD_GUILD_ID);
+        // this.buffcord = await this.discordjsBot.guilds.fetch(this.options.DISCORD_GUILD_ID);
     }
 
     private setupDiscordJSBot = () => {
@@ -42,7 +42,7 @@ export class DiscordBot {
     private addCommandHandlers = () => {
         this.commandHandlers = {};
         this.options.commandHandlers.forEach((handler: MessageHandler) => {
-            this.commandHandlers[handler.command_string] = handler;
+            this.commandHandlers[handler.commandString] = handler;
         });
     }
 
@@ -50,26 +50,25 @@ export class DiscordBot {
 
     private handleMessage = async (commandPrefix: string, msg: discordjs.Message) => {
         if(!this.options.DISCORD_GUILD_ID.includes(msg.guild.id)) return;
-        const msg_content = msg.content;
+        if(msg.author.bot) return;
+        const msgContent = msg.content;
         // if message isn't a command or is only the command prefix, return
-        if (msg_content.charAt(0) !== commandPrefix || msg_content.length === 1) return;
+        if (msgContent.charAt(0) !== commandPrefix || msgContent.length === 1) return;
 
-        const user_command = messageContentToUserCommand(commandPrefix, msg_content);
-        const command_handler = this.commandHandlers[user_command.command];
-        const is_help_command = !!command_handler && user_command.command === 'help';
-        
-        if (!command_handler && [...DISCORD_CHANNEL_IDS.basketball, ...DISCORD_CHANNEL_IDS.football].includes(msg.channel.id)) {
-            msg.reply(this.commandNotFoundError(user_command));
+        const userCommand = messageContentToUserCommand(commandPrefix, msgContent);
+        const commandHandler = this.commandHandlers[userCommand.command];
+        const isHelpCommand = !!commandHandler && userCommand.command === 'help';
+
+        if (!commandHandler && [...DISCORD_CHANNEL_IDS.basketball, ...DISCORD_CHANNEL_IDS.football].includes(msg.channel.id)) {
+            msg.reply(this.commandNotFoundError(userCommand));
             return;
         }
-        if (!command_handler) return;
-        if(command_handler.channels.length > 0 && !command_handler.channels.includes(msg.channel.id)) return;
-        msg.channel.startTyping();
+        if (!commandHandler) return;
+        if(commandHandler.channels.length > 0 && !commandHandler.channels.includes(msg.channel.id)) return;
         try {
-            await this.commandHandlers[user_command.command].handleMessage(msg, user_command);
+            await this.commandHandlers[userCommand.command].handleMessage(msg, userCommand);
         } catch (err: any) {
             msg.channel.send(`An API error occured. Please let Will know.\n${err}`);
         }
-        msg.channel.stopTyping();
     }
 }

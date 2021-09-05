@@ -4,7 +4,7 @@ import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
 export class PingHandler extends MessageHandler {
-    command_string = 'ping';
+    commandString = 'ping';
     description = 'Responds pong. Is used to test bot activity.';
     channels = [];
     hideInHelpMenu = true;

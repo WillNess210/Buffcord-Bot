@@ -1,40 +1,70 @@
 import * as discordjs from 'discord.js';
-import { DISCORD_CHANNEL_IDS, FOOTBALL_MANAGER } from '../../..';
+import { DEFAULT_TEAM, DISCORD_CHANNEL_IDS, FOOTBALL_MANAGER } from '../../..';
 import { PlayersEntity } from '../../../apis/football/models';
-import { COLLEGES } from '../../../colleges/info';
-import { EmbedMessage, getDiscordJSEmbedObject } from '../../helpers/Embed';
+import { getCollegeInformation, getCollegeInformationFromShort } from '../../../colleges/info';
+import { CollegeInformation } from '../../../colleges/model';
+import { footballPlayerPositionToDescription, footballPlayerStatusToDescription, getHeightString, locationStripUSA } from '../../../common/utils';
+import { EmbedField } from '../../helpers/Embed';
 import { UserCommand } from '../../helpers/UserCommand';
 import { MessageHandler } from '../MessageHandler';
 
+interface RosterRequest {
+    team: CollegeInformation;
+    position: string;
+}
+
 export class FBRosterHandler extends MessageHandler {
-    command_string = 'roster';
+    commandString = 'roster';
     description = 'Displays the current roster.';
+    usage = [{
+        command: "roster [team]",
+        description: "to view a teams positions"
+    }, {
+        command: "roster [team] [position]",
+        description: "to view players"
+    }];
     channels = [...DISCORD_CHANNEL_IDS.football];
-    hideInHelpMenu = false;
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
-        const players = (await FOOTBALL_MANAGER.getRoster()).players;
         if (userCommand.args.length === 0) {
-            // display list of positions
-            const messagePrefix = `Please specify which position you'd like to see. Here are the options:\n`;
-            const positions = players.map((a: PlayersEntity) => a.position)
+            return this.sendTextMessage(msg, this.messageHandlerToString(this, userCommand.prefix));
+        }
+        const team = getCollegeInformationFromShort(userCommand.args[0]);
+        if (team === null) {
+            return this.sendTextMessage(msg, `Error: \`${userCommand.args[0]}\` is not a valid team. Use \`${userCommand.prefix}teams\` for a list of teams.\nExample: \`${userCommand.prefix}${userCommand.command} ${DEFAULT_TEAM.short}\` for ${DEFAULT_TEAM.name}`);
+        }
+        const rosterResponse = (await FOOTBALL_MANAGER.getRoster(team));
+        const players = rosterResponse.players;
+        const positions = players
+                .map((a: PlayersEntity) => a.position.toUpperCase())
                 .filter((position: string, index: number, ar: string[]) => ar.indexOf(position) === index)
                 .sort();
-            const messageSuffix = `\n Example command: \`${userCommand.prefix}${this.command_string} ${positions[0]}\``;
-            const message = messagePrefix + positions.map(position => `**${position}**`).join(', ') + messageSuffix;
-            
-            return msg.channel.send(message);
+        const positionIncludedInRequest = userCommand.args.length > 1;
+        const position = positionIncludedInRequest ? userCommand.args[1].toUpperCase() : "";
+        const positionValid = positionIncludedInRequest && positions.find((pos: string) => pos === position);
+        if (!positionIncludedInRequest || !positionValid) {
+            const invalidPositionLine = positionIncludedInRequest && !positionValid ? `${position} is not a valid position. ` : "";
+            const optionsLine = invalidPositionLine + `Please specify which position you'd like to see. Here are the options:\n`;
+            const exampleLine = `\n Example command: \`${userCommand.prefix}${this.commandString} ${team.short} ${positions[0]}\` to get all ${positions[0]} players for ${team.name}.`;
+            const message = optionsLine + positions.map(position => `**${position}**`).join(', ') + exampleLine;
+            return this.sendTextMessage(msg, message);
         }
-        const position = userCommand.args[0];
 
-        
-        const msg_resp = `**Colorado** Players in position **${position}**:\n` + players
+        const msgFields = players
             .filter((a: PlayersEntity) => a.position === position)
-            .sort((a: PlayersEntity, b: PlayersEntity) => {
-                return (parseInt(a.jersey) < parseInt(b.jersey) ) ? -1 : 1;
-            })
-            .map((player: PlayersEntity) => `**${player.jersey}:** ${player.name}, ${player.eligibility}, ${player.height}in ${player.weight}lbs`)
-            .join("\n");
-        msg.channel.send(msg_resp, { split: true });
+            .sort((a, b) => parseInt(a.jersey) > parseInt(b.jersey) ? 1 : -1)
+            .map((player: PlayersEntity) => ({
+                title: `${player.jersey}. ${player.name}`,
+                value: `${player.eligibility}\n${getHeightString(player.height)} ${player.weight}lbs\n${footballPlayerStatusToDescription(player.status)}\n${locationStripUSA(player.birth_place)}`,
+                inline: true,
+            } as EmbedField));
+        this.sendEmbedMessage(msg, {
+            color: team.color,
+            fields: msgFields,
+            primaryTitle: `${team.name} ${rosterResponse.name}`,
+            primarTitleImageUrl: team.logo_url,
+            secondaryTitle: `Players at ${footballPlayerPositionToDescription(position)}`,
+        });
     }
+
 }

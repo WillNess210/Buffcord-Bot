@@ -7,6 +7,8 @@ import FBSportsRadarApi from './apis/football/SportsRadarAPI';
 import { FBRosterHandler } from './discord/message_handlers/football/FBRosterHandler';
 import FBManager from './managers/FBManager';
 import { College } from './colleges/model';
+import { getCollegeInformation } from './colleges/info';
+import { FBTeamsHandler } from './discord/message_handlers/football/FBTeamsHandler';
 
 /*
 TODO:
@@ -25,7 +27,8 @@ export const botOptions: DiscordBotOptions = {
     commandHandlers: []
 };
 
-export const FOOTBALL_MANAGER = new FBManager({token: environment.FB_SPORTSRADAR_TOKEN, season: "", defaultTeam: College.colorado});
+export const DEFAULT_TEAM = getCollegeInformation(College.colorado);
+export const FOOTBALL_MANAGER = new FBManager({token: environment.FB_SPORTSRADAR_TOKEN, season: ""});
 
 export const DISCORD_CHANNEL_IDS = {
     basketball: process.env.DISCORD_CHANNEL_BASKETBALL.split(','),
@@ -35,7 +38,8 @@ export const DISCORD_CHANNEL_IDS = {
 const handlers = [
     new HelpHandler(),
     new PingHandler(),
-    new FBRosterHandler()
+    new FBRosterHandler(),
+    new FBTeamsHandler()
 ];
 botOptions.commandHandlers = handlers;
 
