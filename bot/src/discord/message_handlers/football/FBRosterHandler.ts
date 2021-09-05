@@ -1,5 +1,5 @@
 import * as discordjs from 'discord.js';
-import { DEFAULT_TEAM, DISCORD_CHANNEL_IDS, FOOTBALL_MANAGER } from '../../..';
+import { botOptions, DEFAULT_TEAM, DISCORD_CHANNEL_IDS, FOOTBALL_MANAGER } from '../../..';
 import { PlayersEntity } from '../../../apis/football/models';
 import { getCollegeInformation, getCollegeInformationFromShort } from '../../../colleges/info';
 import { CollegeInformation } from '../../../colleges/model';
@@ -15,10 +15,10 @@ interface RosterRequest {
 
 export class FBRosterHandler extends MessageHandler {
     commandString = 'roster';
-    description = 'Displays the current roster.';
+    description = 'Displays the current roster. (use \`${botOptions.commandPrefix}teams\` to get a list of teams)';
     usage = [{
         command: "roster [team]",
-        description: "to view a teams positions"
+        description: `to view a teams positions`
     }, {
         command: "roster [team] [position]",
         description: "to view players"
