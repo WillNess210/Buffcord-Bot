@@ -1,21 +1,25 @@
 import axios from "axios";
 import { CollegeInformation } from "../../colleges/model";
 import { APIResponse, ResponseStatus } from "../../common/APIResponse";
-import { RosterResponse } from "./models";
+import CachedDataManager, { CacheStrategies } from "../../common/CachedDataManager";
+import { FBSchedule, RosterResponse } from "./models";
 
 export interface FBSportsRadarApiOptions {
     token: string;
     season: string;
+    cachedData: CachedDataManager;
 }
 
 export default class FBSportsRadarApi {
     private key: string;
     private season: string;
     private api_prefix = "http://api.sportradar.us/ncaafb/trial/v7/en/";
+    private cachedData: CachedDataManager;
 
     constructor (options: FBSportsRadarApiOptions) {
         this.key = options.token;
         this.season = options.season;
+        this.cachedData = options.cachedData;
     }
 
     private getAPISuffix = () => `.json?api_key=${this.key}`;
@@ -49,8 +53,31 @@ export default class FBSportsRadarApi {
         };
     }
 
-    public getRosterForTeam = (college: CollegeInformation): Promise<APIResponse<RosterResponse>> => {
-        const api_mid = `teams/${college.fbId}/full_roster`;
-        return this.fetchAPI(api_mid);
+    private throwAPIErrorIfFailure = async <T>(response: Promise<APIResponse<T>>): Promise<T> => {
+        const resp = await response;
+        if (resp.error) throw new Error(`API Error`);
+        return resp.data;
+    }
+
+    public getRosterForTeam = (team: CollegeInformation): Promise<RosterResponse> => {
+        const api_mid = `teams/${team.fbId}/full_roster`;
+        return this.throwAPIErrorIfFailure(
+            this.cachedData.getResponse(
+                api_mid,
+                CacheStrategies.NewDay,
+                () => this.fetchAPI<RosterResponse>(api_mid)
+            )
+        );
+    }
+
+    public getScheduleForYear = (year: string): Promise<FBSchedule> => {
+        const api_mid = `games/${year}/REG/schedule`;
+        return this.throwAPIErrorIfFailure(
+            this.cachedData.getResponse(
+                "fb" + api_mid,
+                CacheStrategies.NewDay,
+                () => this.fetchAPI<FBSchedule>(api_mid)
+            )
+        );
     }
 }

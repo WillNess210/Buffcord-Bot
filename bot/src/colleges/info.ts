@@ -141,6 +141,9 @@ COLLEGES.forEach(college => COLLEGE_MAP[college.college] = college);
 export const COLLEGE_SHORT_MAP = {} as CustomCollegeMap;
 COLLEGES.forEach(college => COLLEGE_SHORT_MAP[college.short] = college);
 
+export const COLLEGE_FBID_MAP = {} as CustomCollegeMap;
+COLLEGES.forEach(college => COLLEGE_FBID_MAP[college.fbId] = college);
+
 export const getCollegeInformation = (college: College): CollegeInformation => {
     return COLLEGE_MAP[college];
 }
@@ -148,4 +151,8 @@ export const getCollegeInformation = (college: College): CollegeInformation => {
 export const getCollegeInformationFromShort = (short: string): CollegeInformation | null => {
     const cshort = short.toUpperCase();
     return cshort in COLLEGE_SHORT_MAP ? COLLEGE_SHORT_MAP[cshort] : null;
+}
+
+export const getCollegeInformationFromFbID = (id: string): CollegeInformation | null => {
+    return id in COLLEGE_FBID_MAP ? COLLEGE_FBID_MAP[id] : null;
 }

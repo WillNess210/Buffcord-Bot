@@ -9,6 +9,7 @@ import FBManager from './managers/FBManager';
 import { College } from './colleges/model';
 import { getCollegeInformation } from './colleges/info';
 import { FBTeamsHandler } from './discord/message_handlers/football/FBTeamsHandler';
+import { FBScheduleHandler } from './discord/message_handlers/football/FBScheduleHandler';
 
 /*
 TODO:
@@ -39,7 +40,8 @@ const handlers = [
     new HelpHandler(),
     new PingHandler(),
     new FBRosterHandler(),
-    new FBTeamsHandler()
+    new FBTeamsHandler(),
+    new FBScheduleHandler()
 ];
 botOptions.commandHandlers = handlers;
 

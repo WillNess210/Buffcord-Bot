@@ -15,7 +15,7 @@ export interface MessageHandlerEmbed {
     primaryTitle?: string;
     primarTitleImageUrl?: string;
     secondaryTitle?: string;
-    fields: EmbedField[];
+    fields?: EmbedField[];
 }
 
 
@@ -35,7 +35,7 @@ export class MessageHandler {
         const desc = `**${handler.commandString}:** ${handler.description}`;
         if (!handler.usage) return desc;
         return desc + "\n" + handler.usage
-            .map((usage: CommandUsage) => `\t usage: **${prefix}${usage.command}** (${usage.description})`)
+            .map((usage: CommandUsage) => `\t usage: \`${prefix}${usage.command}\` (${usage.description})`)
             .join("\n");
     }
 

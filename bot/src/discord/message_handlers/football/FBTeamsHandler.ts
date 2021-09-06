@@ -1,5 +1,5 @@
 import * as discordjs from 'discord.js';
-import { DEFAULT_TEAM, DISCORD_CHANNEL_IDS } from '../../..';
+import { DEFAULT_TEAM, DISCORD_CHANNEL_IDS, FOOTBALL_MANAGER } from '../../..';
 import { COLLEGE_SHORT_MAP } from '../../../colleges/info';
 import { CollegeInformation } from '../../../colleges/model';
 import { UserCommand } from '../../helpers/UserCommand';
@@ -12,7 +12,7 @@ export class FBTeamsHandler extends MessageHandler {
 
 
     private getCollegeInformationAsString = (college: CollegeInformation): string => {
-        const str = `${college.emoji || ":football:"} ${college.name}: ${college.short}`;
+        const str = `${FOOTBALL_MANAGER.getEmojiForTeamId(college.fbId)} ${college.name}: ${college.short}`;
         return college.college === DEFAULT_TEAM.college
             ? `**${str}**`
             : str;
