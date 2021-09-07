@@ -69,6 +69,7 @@ export class DiscordBot {
             await this.commandHandlers[userCommand.command].handleMessage(msg, userCommand);
         } catch (err: any) {
             msg.channel.send(`An API error occured. Please let Will know.\n${err}`);
+            console.error(err);
         }
     }
 }
