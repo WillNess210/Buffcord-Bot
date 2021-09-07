@@ -20,10 +20,8 @@ export class FBScheduleHandler extends MessageHandler {
 
     private gameToString = (game: GameResponse): string => {
         if (game.isByeWeek) return `${game.weekNumber}: **Bye Week**`;
-        const gameFinished = !!game.game.scoring && !!game.game.scoring.away_points && !!game.game.scoring.home_points;
-        const homeWon = gameFinished && game.game.scoring.home_points >= game.game.scoring.away_points;
-        const awayTeam = this.getTeamString(game.game.away, !game.requestTeamIsHome, !homeWon, gameFinished ? game.game.scoring.away_points : undefined);
-        const homeTeam = this.getTeamString(game.game.home, game.requestTeamIsHome, homeWon, gameFinished ? game.game.scoring.home_points : undefined);
+        const awayTeam = this.getTeamString(game.game.away, !game.requestTeamIsHome, !game.homeWon, game.gameFinished ? game.game.scoring.away_points : undefined);
+        const homeTeam = this.getTeamString(game.game.home, game.requestTeamIsHome, game.homeWon, game.gameFinished ? game.game.scoring.home_points : undefined);
 
         return `${game.weekNumber}: ${awayTeam} ${game.game.neutral_site ? 'vs' : this.styleText('@', game.requestTeamIsHome)} ${homeTeam}`;
     }
@@ -37,16 +35,16 @@ export class FBScheduleHandler extends MessageHandler {
             return this.sendTextMessage(msg, `Error: \`${userCommand.args[0]}\` is not a valid team. Use \`${userCommand.prefix}teams\` for a list of teams.\nExample: \`${userCommand.prefix}${userCommand.command} ${DEFAULT_TEAM.short}\` for ${DEFAULT_TEAM.name}`);
         }
         const schedule = await FOOTBALL_MANAGER.getScheduleForTeam(team);
-        const teamName = (schedule[0].requestTeamIsHome ? schedule[0].game.home : schedule[0].game.away).name;
-        const msgResponse = schedule.map(this.gameToString).join('\n');
+        const teamName = (schedule.games[0].requestTeamIsHome ? schedule.games[0].game.home : schedule.games[0].game.away).name;
+        const msgResponse = schedule.games.map(this.gameToString).join('\n');
         if (msgResponse.length >= 6000) {
             return this.sendTextMessage(msg, msgResponse);
         }
         this.sendEmbedMessage(msg, {
             color: team.color,
-            primaryTitle: teamName,
+            primaryTitle: `${teamName} (${schedule.wins}-${schedule.losses})`,
             primarTitleImageUrl: team.logo_url,
-            secondaryTitle: `${await FOOTBALL_MANAGER.getYear()} Schedule`,
+            secondaryTitle: `${await FOOTBALL_MANAGER.getYear()} Schedule (${schedule.gamesToPlay} games to play)`,
             content: msgResponse
         })
     }

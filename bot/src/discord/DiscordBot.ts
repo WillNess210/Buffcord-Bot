@@ -5,15 +5,15 @@ import { botOptions, DISCORD_CHANNEL_IDS } from '..';
 
 export interface DiscordBotOptions {
     DISCORD_BOT_TOKEN: string;
-    DISCORD_GUILD_ID: string[];
+    DISCORD_GUILD_ID: string;
     commandPrefix: string;
     commandHandlers: MessageHandler[];
 }
 
 export class DiscordBot {
-    private discordjsBot: discordjs.Client;
-    private buffcord: discordjs.Guild;
-    private options: DiscordBotOptions;
+    public discordjsBot: discordjs.Client;
+    public buffcord: discordjs.Guild;
+    public options: DiscordBotOptions;
     private commandHandlers: { [key: string]: MessageHandler; };
     
     constructor (options: DiscordBotOptions) {
@@ -25,7 +25,7 @@ export class DiscordBot {
     }
 
     private fetchBuffcord = async () => {
-        // this.buffcord = await this.discordjsBot.guilds.fetch(this.options.DISCORD_GUILD_ID);
+        this.buffcord = await this.discordjsBot.guilds.fetch(this.options.DISCORD_GUILD_ID);
     }
 
     private setupDiscordJSBot = () => {

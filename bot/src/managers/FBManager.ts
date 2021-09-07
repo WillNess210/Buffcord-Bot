@@ -1,4 +1,4 @@
-import { ByeWeek, FBSchedule, Game, GameResponse, PlayersEntity, RosterResponse, Week } from "../apis/football/models";
+import { ByeWeek, FBSchedule, Game, GameResponse, PlayersEntity, RosterResponse, ScheduleResponse, Week } from "../apis/football/models";
 import SportsRadarAPI from "../apis/football/SportsRadarAPI";
 import { getCollegeInformation, getCollegeInformationFromFbID } from "../colleges/info";
 import { College, CollegeInformation } from "../colleges/model";
@@ -63,7 +63,7 @@ export default class FBManager {
     
     public getScheduleForTeam = async(
         team: CollegeInformation
-    ): Promise<GameResponse[]> => {
+    ): Promise<ScheduleResponse> => {
         const scheduleResponse = await this.sportsRadarApi.getScheduleForYear(await this.getYear());
         const games: GameResponse[] = [];
         scheduleResponse.weeks.forEach((week: Week, weekNumber: number) => {
@@ -73,7 +73,9 @@ export default class FBManager {
                         weekNumber,
                         requestTeamIsHome: game.home.id === team.fbId,
                         game,
-                        isByeWeek: false
+                        isByeWeek: false,
+                        gameFinished: !!game.scoring && !!game.scoring.away_points && !!game.scoring.home_points,
+                        homeWon: game.scoring && game.scoring.home_points > game.scoring.away_points
                     });
                 }
             });
@@ -82,12 +84,33 @@ export default class FBManager {
                     games.push({
                         weekNumber,
                         requestTeamIsHome: true,
-                        isByeWeek: true
+                        isByeWeek: true,
+                        gameFinished: true,
+                        homeWon: false
                     })
                 }
             })
         });
-        return games;
+        let wins = 0;
+        let losses = 0;
+        let gamesToPlay = 0;
+        games.forEach((game: GameResponse) => {
+            if (game.isByeWeek) return;
+            if (game.gameFinished) {
+                if((game.homeWon && game.requestTeamIsHome) || (!game.homeWon && !game.requestTeamIsHome)) {
+                    wins += 1;
+                    return;
+                }
+                losses += 1;
+            }
+            gamesToPlay++;
+        });
+        return {
+            games,
+            gamesToPlay,
+            wins,
+            losses
+        }
     }
 
     public getEmojiForTeamId = (teamId: string) => {

@@ -7,5 +7,6 @@ export default interface Environment {
     DISCORD_GUILD_ID: string;
     DISCORD_CHANNEL_BASKETBALL: string;
     DISCORD_CHANNEL_FOOTBALL: string;
+    DISCORD_CHANNEL_ADMIN: string;
     ENV: "dev" | "prod";
 }

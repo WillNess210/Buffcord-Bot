@@ -73,10 +73,19 @@ export interface Team {
     alias: string;
 }
 
+export interface ScheduleResponse {
+    games: GameResponse[];
+    wins: number;
+    losses: number;
+    gamesToPlay: number;
+}
+
 export interface GameResponse {
     weekNumber: number;
     requestTeamIsHome: boolean;
     isByeWeek: boolean;
+    gameFinished: boolean;
+    homeWon: boolean;
     game?: Game;
 }
 

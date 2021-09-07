@@ -9,7 +9,7 @@ export class HelpHandler extends MessageHandler {
     channels = [];
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand): Promise<any> {
-        const requestChannel = [...DISCORD_CHANNEL_IDS.basketball, ...DISCORD_CHANNEL_IDS.football].find((id: string) => id === msg.channel.id);
+        const requestChannel = [...DISCORD_CHANNEL_IDS.basketball, ...DISCORD_CHANNEL_IDS.football, ...DISCORD_CHANNEL_IDS.admin].find((id: string) => id === msg.channel.id);
         if (!requestChannel) return msg.channel.send(`I do not work in this channel.`);
         const displayString = '**Commands**:\n' +
             botOptions.commandHandlers
