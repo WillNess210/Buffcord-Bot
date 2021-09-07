@@ -10,10 +10,12 @@ export class LastMessagedHandler extends MessageHandler {
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand): Promise<any> {
         this.sendTextMessage(msg, "This might take a bit. Please do not retry the command again anytime soon. If it's been an hour and no response, let will know.");
-        const lastMessagedMap = await DISCORD_MANAGER.getLastMessagedUserMap();
-        this.sendTextMessage(msg, Object.keys(lastMessagedMap).map((username: string): string => {
-            return `${username}: ${lastMessagedMap[username]}`;
-        }).join('\n'));
+        // const lastMessagedMap = await DISCORD_MANAGER.getLastMessagedUserMap();
+        // this.sendTextMessage(msg, Object.keys(lastMessagedMap).map((username: string): string => {
+        //     return `${username}: ${lastMessagedMap[username]}`;
+        // }).join('\n'));
+        const members = await DISCORD_MANAGER.getAllUsers();
+        this.sendTextMessage(msg, members.map(member => member.displayName).join('\n'));
     }
 
 }

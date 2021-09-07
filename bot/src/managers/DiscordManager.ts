@@ -98,7 +98,7 @@ export default class DiscordManager {
         return channels;
     }
 
-    private getAllUsers = async(): Promise<GuildMember[]> => {
+    public getAllUsers = async(): Promise<GuildMember[]> => {
         const members: GuildMember[] = [];
         (await this.bot.buffcord.members.fetch()).forEach((member: GuildMember) => members.push(member));
         return members;
