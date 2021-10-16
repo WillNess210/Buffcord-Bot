@@ -92,7 +92,7 @@ export interface GameResponse {
 export interface Game {
     id:            string;
     status:        Status;
-    scheduled:     Date;
+    scheduled:     string; // date str
     attendance?:   number;
     entry_mode:    EntryMode;
     coverage:      Coverage;

@@ -101,7 +101,8 @@ export default class DiscordManager {
     public getAllUsers = async(): Promise<GuildMember[]> => {
         const members: GuildMember[] = [];
         const memberManager = this.bot.buffcord.members;
-        (await memberManager.fetch({limit: 1000})).forEach((member: GuildMember) => members.push(member));
+        const gMembers = await memberManager.fetch();
+        gMembers.forEach((member: GuildMember) => members.push(member));
         console.log('Got members');
         return members;
     }

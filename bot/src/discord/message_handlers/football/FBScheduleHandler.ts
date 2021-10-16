@@ -2,6 +2,7 @@ import * as discordjs from 'discord.js';
 import { botOptions, DEFAULT_TEAM, DISCORD_CHANNEL_IDS, FOOTBALL_MANAGER } from "../../..";
 import { GameResponse, Team } from '../../../apis/football/models';
 import { getCollegeInformationFromShort } from '../../../colleges/info';
+import { dateStringToReadableString } from '../../../common/utils';
 import { UserCommand } from "../../helpers/UserCommand";
 import { MessageHandler } from "../MessageHandler";
 
@@ -19,11 +20,11 @@ export class FBScheduleHandler extends MessageHandler {
         FOOTBALL_MANAGER.getEmojiForTeamId(team.id) + this.styleText(team.name, bold) + (score ? `(${this.styleText(score, won)})` : '');
 
     private gameToString = (game: GameResponse): string => {
-        if (game.isByeWeek) return `${game.weekNumber}: **Bye Week**`;
+        if (game.isByeWeek) return `**Bye Week**`;
         const awayTeam = this.getTeamString(game.game.away, !game.requestTeamIsHome, !game.homeWon, game.gameFinished ? game.game.scoring.away_points : undefined);
         const homeTeam = this.getTeamString(game.game.home, game.requestTeamIsHome, game.homeWon, game.gameFinished ? game.game.scoring.home_points : undefined);
 
-        return `${game.weekNumber}: ${awayTeam} ${game.game.neutral_site ? 'vs' : this.styleText('@', game.requestTeamIsHome)} ${homeTeam}`;
+        return `${dateStringToReadableString(game.game.scheduled)}: ${awayTeam} ${game.game.neutral_site ? 'vs' : this.styleText('@', game.requestTeamIsHome)} ${homeTeam}`;
     }
 
     async handleMessage (msg: discordjs.Message, userCommand: UserCommand) {
@@ -36,7 +37,13 @@ export class FBScheduleHandler extends MessageHandler {
         }
         const schedule = await FOOTBALL_MANAGER.getScheduleForTeam(team);
         const teamName = (schedule.games[0].requestTeamIsHome ? schedule.games[0].game.home : schedule.games[0].game.away).name;
-        const msgResponse = schedule.games.map(this.gameToString).join('\n');
+        const games = [];
+        for(let i = 0; i < schedule.games.length; i++) {
+            if (i < schedule.games.length - 1 || !schedule.games[i].isByeWeek ) {
+                games.push(schedule.games[i]);
+            }
+        }
+        const msgResponse = games.map(this.gameToString).join('\n');
         if (msgResponse.length >= 6000) {
             return this.sendTextMessage(msg, msgResponse);
         }

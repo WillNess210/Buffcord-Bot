@@ -74,7 +74,7 @@ export default class FBManager {
                         requestTeamIsHome: game.home.id === team.fbId,
                         game,
                         isByeWeek: false,
-                        gameFinished: !!game.scoring && !!game.scoring.away_points && !!game.scoring.home_points,
+                        gameFinished: game.status === 'closed',
                         homeWon: game.scoring && game.scoring.home_points > game.scoring.away_points
                     });
                 }
@@ -102,6 +102,7 @@ export default class FBManager {
                     return;
                 }
                 losses += 1;
+                return;
             }
             gamesToPlay++;
         });

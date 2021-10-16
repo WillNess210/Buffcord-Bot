@@ -17,7 +17,7 @@ export class DiscordBot {
     private commandHandlers: { [key: string]: MessageHandler; };
     
     constructor (options: DiscordBotOptions) {
-        this.discordjsBot = new discordjs.Client();
+        this.discordjsBot = new discordjs.Client({});
         this.options = options;
         this.discordjsBot.login(this.options.DISCORD_BOT_TOKEN);
         this.fetchBuffcord();
@@ -49,7 +49,7 @@ export class DiscordBot {
     private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized. Type ${botOptions.commandPrefix}help for a list of commands.`;
 
     private handleMessage = async (commandPrefix: string, msg: discordjs.Message) => {
-        if(!this.options.DISCORD_GUILD_ID.includes(msg.guild.id)) return;
+        if(this.options.DISCORD_GUILD_ID !== (msg.guild.id)) return;
         if(msg.author.bot) return;
         const msgContent = msg.content;
         // if message isn't a command or is only the command prefix, return

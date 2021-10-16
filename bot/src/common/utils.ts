@@ -60,3 +60,8 @@ export const locationStripUSA = (location: string): string => {
         ? location.substr(0, splitIndex)
         : location;
 }
+
+export const dateStringToReadableString = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    return`${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
+}
