@@ -8,6 +8,7 @@ services:
       - 'apparmor=unconfined'
     volumes:
       - ./:/bot
+      - ./node-persist-data:/bot/node-persist-data
     ports:
       - "8080:8080"
     environment:

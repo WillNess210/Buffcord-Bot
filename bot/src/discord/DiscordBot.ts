@@ -2,12 +2,14 @@ import * as discordjs from 'discord.js';
 import { MessageHandler } from './message_handlers/MessageHandler';
 import { messageContentToUserCommand, UserCommand } from './helpers/UserCommand';
 import { botOptions, DISCORD_CHANNEL_IDS } from '..';
+import { MessageTrigger } from './message_handlers/MessageTrigger';
 
 export interface DiscordBotOptions {
     DISCORD_BOT_TOKEN: string;
     DISCORD_GUILD_ID: string;
     commandPrefix: string;
     commandHandlers: MessageHandler[];
+    messageTriggers: MessageTrigger[];
 }
 
 export class DiscordBot {
@@ -15,6 +17,7 @@ export class DiscordBot {
     public buffcord: discordjs.Guild;
     public options: DiscordBotOptions;
     private commandHandlers: { [key: string]: MessageHandler; };
+    private messageTriggers: MessageTrigger[];
     
     constructor (options: DiscordBotOptions) {
         this.discordjsBot = new discordjs.Client({});
@@ -35,7 +38,29 @@ export class DiscordBot {
         });
         // handle all messages
         this.addCommandHandlers();
-        this.discordjsBot.on('message', (msg: discordjs.Message) => this.handleMessage(this.options.commandPrefix, msg));
+        this.addMessageTriggers();
+        this.discordjsBot.on('message', (msg: discordjs.Message) => {
+            if(this.options.DISCORD_GUILD_ID !== (msg.guild.id)) return;
+            if(msg.author.bot) return;
+            
+            const msgContent = msg.content;
+            // if message isn't a command or is only the command prefix, return
+            const isCommand = !(msgContent.charAt(0) !== this.options.commandPrefix || msgContent.length === 1);
+
+            if (isCommand){
+                try {
+                    const userCommand = messageContentToUserCommand(this.options.commandPrefix, msgContent);
+                    this.handleMessage(userCommand, msg);
+                } catch(error) {}
+            }
+            this.messageTriggers.forEach(async (trigger: MessageTrigger) => {
+                const shouldTrigger = await trigger.shouldTrigger(msg);
+                console.log(`${trigger.name}: ${shouldTrigger}`);
+                if (shouldTrigger) {
+                    trigger.onTrigger(msg);
+                }
+            });
+        });
 
     }
 
@@ -46,16 +71,16 @@ export class DiscordBot {
         });
     }
 
+    private addMessageTriggers = () => {
+        this.messageTriggers = [];
+        this.options.messageTriggers.forEach((trigger: MessageTrigger) => {
+            this.messageTriggers.push(trigger);
+        });
+    }
+
     private commandNotFoundError = (command: UserCommand): string => `Command '${command.command}' not recognized. Type ${botOptions.commandPrefix}help for a list of commands.`;
 
-    private handleMessage = async (commandPrefix: string, msg: discordjs.Message) => {
-        if(this.options.DISCORD_GUILD_ID !== (msg.guild.id)) return;
-        if(msg.author.bot) return;
-        const msgContent = msg.content;
-        // if message isn't a command or is only the command prefix, return
-        if (msgContent.charAt(0) !== commandPrefix || msgContent.length === 1) return;
-
-        const userCommand = messageContentToUserCommand(commandPrefix, msgContent);
+    private handleMessage = async (userCommand: UserCommand, msg: discordjs.Message) => {
         const commandHandler = this.commandHandlers[userCommand.command];
         const isHelpCommand = !!commandHandler && userCommand.command === 'help';
 
@@ -72,4 +97,5 @@ export class DiscordBot {
             console.error(err);
         }
     }
+
 }

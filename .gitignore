@@ -4,3 +4,4 @@ emojis
 dev_notes.txt
 *.pem
 bot/dist
+node-persist-data

@@ -15,7 +15,7 @@ export default class FBManager {
     private cachedData: CachedDataManager;
 
     constructor(options: FBManagerOptions) {
-        this.cachedData = new CachedDataManager(); 
+        this.cachedData = new CachedDataManager("fb"); 
         this.sportsRadarApi = new SportsRadarAPI({
             token: options.token,
             season: options.season,

@@ -1,25 +1,26 @@
 import axios from "axios";
-import { CollegeInformation } from "../../colleges/model";
 import { APIResponse, ResponseStatus } from "../../common/APIResponse";
 import CachedDataManager, { CacheStrategies } from "../../common/CachedDataManager";
-import { FBSchedule, GameBoxscore, RosterResponse } from "./models";
+import { NBAGameSummary, NBARoster, NBASchedule, NBAStandingsResonse } from "./models";
 
-export interface FBSportsRadarApiOptions {
+export interface NBASportsRadarApiOptions {
     token: string;
     season: string;
     cachedData: CachedDataManager;
 }
 
-export default class FBSportsRadarApi {
+export default class NBASportsRadarApi {
     private key: string;
     private season: string;
-    private api_prefix = "http://api.sportradar.us/ncaafb/trial/v7/en/";
+    private api_prefix = "http://api.sportradar.us/nba/trial/v7/en/";
     private cachedData: CachedDataManager;
+    private lastFetchTime: number;
 
-    constructor (options: FBSportsRadarApiOptions) {
+    constructor (options: NBASportsRadarApiOptions) {
         this.key = options.token;
         this.season = options.season;
         this.cachedData = options.cachedData;
+        this.lastFetchTime = Date.now() - 10000;
     }
 
     private getAPISuffix = () => `.json?api_key=${this.key}`;
@@ -29,7 +30,9 @@ export default class FBSportsRadarApi {
         let resp =  null;
 
         try {
+            while(Date.now() < this.lastFetchTime + 1200){}
             resp = await axios.get(api);
+            this.lastFetchTime = Date.now();
         } catch (e) {
             console.log(`404: ${api}`);
             return {
@@ -59,35 +62,47 @@ export default class FBSportsRadarApi {
         return resp.data;
     }
 
-    public getRosterForTeam = (team: CollegeInformation): Promise<RosterResponse> => {
-        const api_mid = `teams/${team.fbId}/full_roster`;
+    public getNBAStandings = async (): Promise<NBAStandingsResonse> => {
+        const api_mid = `seasons/${this.season}/REG/standings`;
         return this.throwAPIErrorIfFailure(
             this.cachedData.getResponse(
-                api_mid,
+                "nba" + api_mid,
                 CacheStrategies.NewDay,
-                () => this.fetchAPI<RosterResponse>(api_mid)
+                () => this.fetchAPI<NBAStandingsResonse>(api_mid)
             )
         );
     }
 
-    public getScheduleForYear = (year: string): Promise<FBSchedule> => {
-        const api_mid = `games/${year}/REG/schedule`;
+    public getNBATeamRoster = async(team_id: string) : Promise<NBARoster> => {
+        const api_mid=`teams/${team_id}/profile`;
+
         return this.throwAPIErrorIfFailure(
             this.cachedData.getResponse(
-                "fb" + api_mid,
-                CacheStrategies.NewDay,
-                () => this.fetchAPI<FBSchedule>(api_mid)
+                "nba" + api_mid,
+                CacheStrategies.WeekDuration,
+                () => this.fetchAPI<NBARoster>(api_mid)
             )
         );
     }
 
-    public getGameBoxscore = (gameid: string): Promise<GameBoxscore> => {
-        const api_mid = `games/${gameid}/boxscore`;
+    public getNBASchedule = async(): Promise<NBASchedule> => {
+        const api_mid = `games/${this.season}/REG/schedule`;
         return this.throwAPIErrorIfFailure(
             this.cachedData.getResponse(
-                "game" + api_mid,
-                CacheStrategies.MinuteDuration,
-                () => this.fetchAPI<GameBoxscore>(api_mid)
+                "nba" + api_mid,
+                CacheStrategies.NewDay,
+                () => this.fetchAPI<NBASchedule>(api_mid)
+            )
+        );
+    }
+
+    public getNBAGameSummary = async(game_id: string): Promise<NBAGameSummary> => {
+        const api_mid = `games/${game_id}/summary`;
+        return this.throwAPIErrorIfFailure(
+            this.cachedData.getResponse(
+                "nba" + api_mid,
+                CacheStrategies.NewDay,
+                () => this.fetchAPI<NBAGameSummary>(api_mid)
             )
         );
     }

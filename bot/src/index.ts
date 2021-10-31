@@ -12,6 +12,11 @@ import { FBTeamsHandler } from './discord/message_handlers/football/FBTeamsHandl
 import { FBScheduleHandler } from './discord/message_handlers/football/FBScheduleHandler';
 import { LastMessagedHandler } from './discord/message_handlers/admin/LastMessagedHandler';
 import DiscordManager from './managers/DiscordManager';
+import LocalDatabase from './common/storage/LocalDatabase';
+import { NBATrackerTrigger } from './discord/message_handlers/basketball/NBATrackerTrigger';
+import { MessageHandler } from './discord/message_handlers/MessageHandler';
+import { MessageTrigger } from './discord/message_handlers/MessageTrigger';
+import NBAManager from './managers/NBAManager';
 
 /*
 TODO:
@@ -22,16 +27,21 @@ config();
 
 const environment = process.env as unknown as Environment;
 
+// SETTING UP LOCAL DATABASE
+export const LOCAL_DATABASE = new LocalDatabase();
+
 // SETTING UP BOT
 export const botOptions: DiscordBotOptions = {
     DISCORD_BOT_TOKEN: environment.DISCORD_BOT_TOKEN,
     DISCORD_GUILD_ID: environment.DISCORD_GUILD_ID,
     commandPrefix: environment.COMMAND_PREFIX,
-    commandHandlers: []
+    commandHandlers: [],
+    messageTriggers: []
 };
 
 export const DEFAULT_TEAM = getCollegeInformation(College.colorado);
 export const FOOTBALL_MANAGER = new FBManager({token: environment.FB_SPORTSRADAR_TOKEN, season: ""});
+export const NBA_MANAGER = new NBAManager({token: environment.NBA_SPORTSRADAR_TOKEN, season: new Date().getFullYear().toString()});
 
 export const DISCORD_CHANNEL_IDS = {
     basketball: environment.DISCORD_CHANNEL_BASKETBALL.split(','),
@@ -39,7 +49,7 @@ export const DISCORD_CHANNEL_IDS = {
     admin: environment.DISCORD_CHANNEL_ADMIN.split(','),
 };
 // set commandHandlers after botOptions creation so the handlers can have access to the config
-const handlers = [
+const handlers: MessageHandler[] = [
     // common
     new HelpHandler(),
     new PingHandler(),
@@ -51,7 +61,12 @@ const handlers = [
     // admin
     new LastMessagedHandler(),
 ];
+const triggers: MessageTrigger[] = [
+    new NBATrackerTrigger(environment.DISCORD_CHANNEL_NBA),
+];
+
 botOptions.commandHandlers = handlers;
+botOptions.messageTriggers = triggers;
 
 const discordBot = new DiscordBot(botOptions);
 export const DISCORD_MANAGER = new DiscordManager(discordBot);

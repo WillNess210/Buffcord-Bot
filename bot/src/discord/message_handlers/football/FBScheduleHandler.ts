@@ -17,7 +17,7 @@ export class FBScheduleHandler extends MessageHandler {
 
     private styleText = (text: string | number, bold: boolean) => bold ? `**${text}**` : text;
     private getTeamString = (team: Team, bold: boolean, won: boolean, score?: number) =>
-        FOOTBALL_MANAGER.getEmojiForTeamId(team.id) + this.styleText(team.name, bold) + (score ? `(${this.styleText(score, won)})` : '');
+        FOOTBALL_MANAGER.getEmojiForTeamId(team.id) + this.styleText(team.name, bold) + (score !== undefined ? `(${this.styleText(score, won)})` : '');
 
     private gameToString = (game: GameResponse): string => {
         if (game.isByeWeek) return `**Bye Week**`;

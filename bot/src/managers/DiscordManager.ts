@@ -1,5 +1,10 @@
+import * as discordjs from 'discord.js';
 import { Channel, GuildMember, Message, TextChannel } from "discord.js";
+import { DEFAULT_TEAM } from "..";
 import { DiscordBot } from "../discord/DiscordBot";
+import { DiscordColor } from "../discord/helpers/Color";
+import { getDiscordJSEmbedObject } from "../discord/helpers/Embed";
+import { MessageListenerEmbed } from "../discord/message_handlers/MessageListener";
 
 export default class DiscordManager {
     private bot: DiscordBot;
@@ -105,5 +110,37 @@ export default class DiscordManager {
         gMembers.forEach((member: GuildMember) => members.push(member));
         console.log('Got members');
         return members;
+    }
+
+    public convertEmbedToObj = ({
+        color = new DiscordColor(0, 0, 0),
+        content,
+        primaryTitle,
+        primarTitleImageUrl,
+        secondaryTitle,
+        fields,
+    }: MessageListenerEmbed): any => {
+        return getDiscordJSEmbedObject({
+            description: content || "",
+            color: color.getInt(),
+            timestamp: new Date(),
+            title: secondaryTitle,
+            thumbnail: {
+                url: primarTitleImageUrl
+            },
+            author: {
+                name: primaryTitle,
+            },
+            footer: {
+                text: "Buffcord",
+                icon_url: DEFAULT_TEAM.logo_url
+            },
+            fields
+        });
+    }
+
+    public async sendMessageToChannel(channelId: string, content: string | MessageListenerEmbed) {
+        const channel = await this.bot.discordjsBot.channels.fetch(channelId) as discordjs.TextChannel;
+        channel.send(typeof content === "string" ? content : this.convertEmbedToObj(content));
     }
 }
