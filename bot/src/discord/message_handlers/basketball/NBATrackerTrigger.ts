@@ -66,14 +66,14 @@ export class NBATrackerTrigger extends MessageTrigger {
         const playerSummary = await NBA_MANAGER.getPlayerSummaryInGame(info.gameId, info.playerId, info.isOnHomeTeam);
         if (playerSummary === undefined || !playerSummary.played) {
             return {
-                primaryTitle: `Buff Tracker: ${playerSummary.full_name || ""}`,
-                secondaryTitle: gameTitle,
+                secondaryTitle: `Buff Tracker: ${playerSummary.full_name || ""}`,
+                primaryTitle: gameTitle,
                 content: "DNP"
             }
         }
         return {
-            primaryTitle: `Buff Tracker: ${playerSummary.full_name}`,
-            secondaryTitle: gameTitle,
+            secondaryTitle: `Buff Tracker: ${playerSummary.full_name} (${playerSummary.statistics.minutes} min)`,
+            primaryTitle: gameTitle,
             fields: this.getEmbedFieldsForPlayerInGame(playerSummary.statistics)
         }
     }
