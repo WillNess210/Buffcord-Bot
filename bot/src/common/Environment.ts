@@ -3,6 +3,7 @@ export default interface Environment {
     DISCORD_BOT_TOKEN: string;
     BB_SPORTSRADAR_TOKEN: string;
     NBA_SPORTSRADAR_TOKEN: string;
+    NBAG_SPORTSRADAR_TOKEN: string;
     FB_SPORTSRADAR_TOKEN: string;
     COMMAND_PREFIX: string;
     DISCORD_GUILD_ID: string;
