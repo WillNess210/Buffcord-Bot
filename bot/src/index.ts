@@ -19,6 +19,8 @@ import { MessageTrigger } from './discord/message_handlers/MessageTrigger';
 import NBAManager from './managers/NBAManager';
 import NBAGManager from './managers/NBAGManager';
 import { NBAGTrackerTrigger } from './discord/message_handlers/basketball/NBAGTrackerTrigger';
+import KenpomManager from './managers/KenpomManager';
+import { KenpomTrigger } from './discord/message_handlers/basketball/KenpomTrigger';
 
 /*
 TODO:
@@ -45,6 +47,7 @@ export const DEFAULT_TEAM = getCollegeInformation(College.colorado);
 export const FOOTBALL_MANAGER = new FBManager({token: environment.FB_SPORTSRADAR_TOKEN, season: ""});
 export const NBA_MANAGER = new NBAManager({token: environment.NBA_SPORTSRADAR_TOKEN, season: new Date().getFullYear().toString()});
 export const NBAG_MANAGER = new NBAGManager({token: environment.NBAG_SPORTSRADAR_TOKEN, season: new Date().getFullYear().toString()})
+export const KENPOM_MANAGER = new KenpomManager();
 
 export const DISCORD_CHANNEL_IDS = {
     basketball: environment.DISCORD_CHANNEL_BASKETBALL.split(','),
@@ -66,6 +69,7 @@ const handlers: MessageHandler[] = [
 ];
 const triggers: MessageTrigger[] = [
     new NBATrackerTrigger(environment.DISCORD_CHANNEL_NBA),
+    new KenpomTrigger(environment.DISCORD_CHANNEL_BASKETBALL)
     // new NBAGTrackerTrigger(environment.DISCORD_CHANNEL_BASKETBALL)
 ];
 
