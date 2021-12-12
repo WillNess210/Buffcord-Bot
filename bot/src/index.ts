@@ -69,7 +69,7 @@ const handlers: MessageHandler[] = [
 ];
 const triggers: MessageTrigger[] = [
     new NBATrackerTrigger(environment.DISCORD_CHANNEL_NBA),
-    new KenpomTrigger(environment.DISCORD_CHANNEL_BASKETBALL)
+    new KenpomTrigger(environment.DISCORD_CHANNEL_NBA)
     // new NBAGTrackerTrigger(environment.DISCORD_CHANNEL_BASKETBALL)
 ];
 
