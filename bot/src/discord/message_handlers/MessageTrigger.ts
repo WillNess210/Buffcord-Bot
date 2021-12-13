@@ -34,6 +34,7 @@ export class MessageTrigger extends MessageListener {
     protected setDailyDateShouldTrigger(timeOfDay: Date) {
         this.shouldTrigger = async (msg: discordjs.Message): Promise<boolean> => {
             const lastCalled = await getLastDateCalled(this.name);
+            console.log(`Last called: ${lastCalled.toDateString()}`);
             const today = new Date();
             const todayAtTimeOfDay = new Date(timeOfDay);
             todayAtTimeOfDay.setFullYear(today.getFullYear());

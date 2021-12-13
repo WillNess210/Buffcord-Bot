@@ -20,7 +20,7 @@ export class KenpomTrigger extends MessageTrigger {
         this.setDailyDateShouldTrigger(dateShouldTrigger);
 
 
-        this.key = this.name + "kenpom";
+        this.key = this.name + "kenpom2";
         this.channelId = channelId;
         this.schools = [
             "Colorado",
