@@ -4,7 +4,7 @@ import { KenpomResult } from '../../../apis/kenpom/models';
 import { MessageTrigger } from "../MessageTrigger";
 
 export class KenpomTrigger extends MessageTrigger {
-    name = "KenpomTracker";
+    name = "KenpomTracker2";
     key: string;
     channelId: string;
 
