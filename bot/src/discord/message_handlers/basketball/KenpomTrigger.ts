@@ -41,7 +41,10 @@ export class KenpomTrigger extends MessageTrigger {
             "George Mason",
             "Drake",
             "Northern Colorado",
-            "Denver"
+            "Denver",
+            "LSU",
+            "Michigan St.",
+            "Creighton"
         ]
     }
 
