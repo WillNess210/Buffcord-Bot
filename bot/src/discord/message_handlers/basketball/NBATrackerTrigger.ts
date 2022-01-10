@@ -79,8 +79,11 @@ export class NBATrackerTrigger extends MessageTrigger {
     }
 
     async onTrigger(msg: discordjs.Message) {
-        const allGames = await (await NBA_MANAGER.getNBASchedule()).games;
-        const trackedPlayers = await NBA_MANAGER.getAllPlayersFromCollege(DEFAULT_TEAM.name);
+        const allGames = (await NBA_MANAGER.getNBASchedule()).games;
+        const trackedPlayers = [
+            ...(await NBA_MANAGER.getAllPlayersFromCollege(DEFAULT_TEAM.name)),
+            ...(await NBA_MANAGER.getAllPlayersWithNames(["Nikola Jokic"]))
+        ];
         const coveredIds = await this.getNBAGameIdsCovered();
         const gamesToCheck: GamePlayerPair[] = [];
         allGames.forEach((game) => {

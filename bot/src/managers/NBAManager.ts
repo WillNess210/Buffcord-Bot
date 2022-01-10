@@ -58,6 +58,20 @@ export default class NBAManager {
         return players;
     }
 
+    public getAllPlayersWithNames = async(names: string[]): Promise<NBAPlayer[]> => {
+        const nameMap = {};
+        names.forEach((name) => nameMap[name] = 1);
+
+        const rosters = await this.getRosters();
+        const players: NBAPlayer[] = [];
+        rosters.forEach((roster) => {
+            roster.players.forEach((player) => {
+                if (player.full_name in nameMap) players.push(player);
+            });
+        });
+        return players;
+    }
+
     public getNBASchedule = async(): Promise<NBASchedule> => {
         return await this.sportsRadarApi.getNBASchedule();
     }
