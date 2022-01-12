@@ -45,7 +45,7 @@ export const botOptions: DiscordBotOptions = {
 
 export const DEFAULT_TEAM = getCollegeInformation(College.colorado);
 export const FOOTBALL_MANAGER = new FBManager({token: environment.FB_SPORTSRADAR_TOKEN, season: ""});
-export const NBA_MANAGER = new NBAManager({token: environment.NBA_SPORTSRADAR_TOKEN, season: new Date().getFullYear().toString()});
+export const NBA_MANAGER = new NBAManager({token: environment.NBA_SPORTSRADAR_TOKEN, season: "2021"});
 export const NBAG_MANAGER = new NBAGManager({token: environment.NBAG_SPORTSRADAR_TOKEN, season: new Date().getFullYear().toString()})
 export const KENPOM_MANAGER = new KenpomManager();
 
