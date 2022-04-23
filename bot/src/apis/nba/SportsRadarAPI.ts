@@ -86,7 +86,7 @@ export default class NBASportsRadarApi {
     }
 
     public getNBASchedule = async(): Promise<NBASchedule> => {
-        const api_mid = `games/${this.season}/REG/schedule`;
+        const api_mid = `games/${this.season}/PST/schedule`;
         return this.throwAPIErrorIfFailure(
             this.cachedData.getResponse(
                 "nba" + api_mid,
